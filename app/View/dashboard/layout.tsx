@@ -10,3 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
     );
 }
+
+git remote add origin https://github.com/MateusAA/verbose-pancake.git
+git branch - M main
+git push - u origin main
