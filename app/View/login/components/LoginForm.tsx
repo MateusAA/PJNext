@@ -4,7 +4,7 @@ const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const formStyles = {
+    const formStyles: React.CSSProperties = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
