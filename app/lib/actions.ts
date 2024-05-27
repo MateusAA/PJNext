@@ -125,6 +125,7 @@ export async function deleteInvoice(id: string) {
     }
 }
 
+// Validando formato dos campos
 const CreateUsers = z.object({
     name: z.string().nonempty({ message: 'Nome é obrigatório.' }),
     email: z.string().email({ message: 'Email inválido.' }),
@@ -156,7 +157,7 @@ export async function createUser(formData: FormData) {
         email,
         password,
     });
-    
+
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
