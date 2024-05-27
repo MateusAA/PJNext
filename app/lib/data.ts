@@ -3,7 +3,7 @@ import {
   CustomerField,
   CustomersTableType,
   InvoiceForm,
-  InvoicesTable,
+  UsersTable,
   LatestInvoiceRaw,
   User,
   Revenue,
@@ -244,5 +244,32 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function fetchFilteredUsers(
+  query: string,
+  currentPage: string,
+) {
+
+  try {
+    const users = await sql<UsersTable>`
+
+      SELECT
+        users.id,
+        users.name,
+        users.email
+      FROM users
+      ORDER BY users.name DESC
+    `;
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return users.rows;
+
+  } catch (error) {
+
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch users.');
+
   }
 }

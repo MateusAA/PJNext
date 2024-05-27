@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcrypt';
 
 export async function authenticate(
     prevState: string | undefined,
@@ -38,6 +39,12 @@ const FormSchema = z.object({
     date: z.string(),
 });
 
+// Use Zod to update the expected types
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateInvoice = FormSchema.omit({ id: true, date: true });
+
+
+
 export type State = {
     errors?: {
         customerId?: string[];
@@ -46,10 +53,6 @@ export type State = {
     };
     message?: string | null;
 };
-
-// Use Zod to update the expected types
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
 export async function createInvoice(prevState: State, formData: FormData) {
     const validatedFields = CreateInvoice.safeParse({
@@ -120,4 +123,66 @@ export async function deleteInvoice(id: string) {
             message: 'Database Error: Failed to Delete Invoice.'
         };
     }
+}
+
+const CreateUsers = z.object({
+    name: z.string().nonempty({ message: 'Nome é obrigatório.' }),
+    email: z.string().email({ message: 'Email inválido.' }),
+    password: z.string().min(6, { message: 'Senha deve ter pelo menos 6 caracteres.' }),
+});
+
+
+export type formData = {
+    errors?: {
+        name?: string[];
+        email?: string[];
+        password?: string[];
+    };
+    message?: string | null;
+};
+
+export async function createUser(formData: FormData) {
+    // Extraindo os dados do FormData
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    // Log dos dados recebidos para depuração
+    console.log('Dados recebidos:', { name, email, password });
+
+    // Validando os campos
+    const validatedFields = CreateUsers.safeParse({
+        name,
+        email,
+        password,
+    });
+    
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create User.',
+        };
+    }
+
+
+    const { name: validatedName, email: validatedEmail, password: validatedPassword } = validatedFields.data;
+
+    // Gerando um salt e hash para a senha
+    const saltRounds = 10; // Fator de custo do bcrypt
+    const hashedPassword = await bcrypt.hash(validatedPassword, saltRounds);
+
+    // Tentando inserir os dados no banco de dados
+    try {
+        await sql`
+            INSERT INTO users (name, email, password)
+            VALUES (${validatedName}, ${validatedEmail}, ${hashedPassword})
+        `;
+    } catch (error) {
+        return {
+            message: 'Database Error: Failed to Create User.'
+        };
+    }
+
+    revalidatePath('/View/dashboard/users');
+    redirect('/View/dashboard/users');
 }
