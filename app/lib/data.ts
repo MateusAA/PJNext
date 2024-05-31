@@ -273,3 +273,22 @@ export async function fetchFilteredUsers(
 
   }
 }
+
+export async function fetchUsers() {
+  try {
+    const data = await sql<CustomerField>`
+     SELECT
+        users.id,
+        users.name,
+        users.email
+      FROM users
+      ORDER BY users.name DESC
+    `;
+
+    const user = data.rows;
+    return user;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all customers.');
+  }
+}

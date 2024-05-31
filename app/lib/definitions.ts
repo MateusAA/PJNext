@@ -59,6 +59,12 @@ export type UsersTable = {
   email: string;
 };
 
+export type UsersFilter = {
+  id: string;
+  name: string;
+  email: string;
+};
+
 export type CustomersTableType = {
   id: string;
   name: string;
