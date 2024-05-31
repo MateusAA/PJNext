@@ -61,7 +61,7 @@ export default function Form() {
                         />
                         <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                     </div>
-                    {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+                    {/*errors.name && <span className="text-red-500 text-sm">{errors.name}</span>*/}
                 </div>
 
                 {/* Email */}
@@ -84,7 +84,7 @@ export default function Form() {
                             <ComputerDesktopIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
                     </div>
-                    {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
+                    {/*errors.email && <span className="text-red-500 text-sm">{errors.email}</span>*/}
                 </div>
 
                 {/* Senha */}
@@ -107,7 +107,7 @@ export default function Form() {
                             <HashtagIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                         </div>
                     </div>
-                    {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
+                    {/*errors.password && <span className="text-red-500 text-sm">{errors.password}</span>*/}
                 </fieldset>
 
             </div>
