@@ -16,7 +16,7 @@ export default function Form() {
     const [errors, setErrors] = useState({});
     const router = useRouter();
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
@@ -24,7 +24,7 @@ export default function Form() {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = new FormData();
         form.append('name', formData.name);
