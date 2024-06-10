@@ -30,6 +30,7 @@ export default async function InvoicesTable({
                                             {(user.name)}
                                         </p>
                                         <p>{(user.email)}</p>
+                                        <p>{(user.description)}</p>
                                     </div>
                                     <div className="flex justify-end gap-2">
                                         <UpdateUsers id={user.id} />
@@ -50,6 +51,9 @@ export default async function InvoicesTable({
                                 </th>
                                 <th scope="col" className="px-3 py-5 font-medium">
                                     Email
+                                <th scope="col" className="px-3 py-5 font-medium">
+                                    Grupo
+                                </th>
                                 </th>
                                 <th scope="col" className="relative py-3 pl-6 pr-3">
                                     <span className="sr-only">Edit</span>
@@ -72,11 +76,13 @@ export default async function InvoicesTable({
                                     <td className="whitespace-nowrap px-3 py-3">
                                         {(user.email)}
                                     </td>
+                                    <td className="whitespace-nowrap px-3 py-3">
+                                        {(user.description)}
+                                    </td>
                                    
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end gap-3">
                                             <UpdateUsers id={user.id} />
-                                            <DeleteInvoice id={user.id} />
                                         </div>
                                     </td>
                                 </tr>

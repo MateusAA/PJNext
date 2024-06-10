@@ -256,11 +256,13 @@ export async function fetchFilteredUsers(
   try {
     const users = await sql<UsersTable>`
 
-      SELECT
+     SELECT
         users.id,
         users.name,
-        users.email
+        users.email,
+        user_group.description
       FROM users
+      JOIN user_group ON user_group.id_group = users.id_grupo
       ORDER BY users.name DESC
     `;
 
@@ -281,8 +283,10 @@ export async function fetchUsers() {
      SELECT
         users.id,
         users.name,
-        users.email
+        users.email,
+        user_group.description
       FROM users
+      JOIN user_group ON user_group.id_group = users.id_grupo
       ORDER BY users.name DESC
     `;
 
