@@ -1,9 +1,9 @@
 import Form from '@/app/ui/users/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchUsers } from '@/app/lib/data';
+import { fetchGroup } from '@/app/lib/data';
 
 export default async function Page() {
-    const users = await fetchUsers();
+    const groups = await fetchGroup();
 
     return (
         <main>
@@ -17,7 +17,7 @@ export default async function Page() {
                     },
                 ]}
             />
-            <Form />
+            <Form groups={groups} />
         </main>
     );
 }

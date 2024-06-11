@@ -4,48 +4,124 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
-  HomeModernIcon,
 } from '@heroicons/react/24/outline';
-import Link  from  'next/link';
+import { UserIcon } from '@heroicons/react/20/solid';
+import { useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { UserIcon } from '@heroicons/react/20/solid';
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
-  { name: 'Home', href: '/View/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/View/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
+// Map of links organized by category
+const links = {
+  home: { name: 'Home', href: '/View/dashboard', icon: HomeIcon },
+  faturamento: {
+    title: 'Faturamento',
+    items: [
+      {
+        name: 'Invoices',
+        href: '/View/dashboard/invoices',
+        icon: DocumentDuplicateIcon,
+      },
+    ],
   },
-  { name: 'Customers', href: '/View/dashboard/costumers', icon: UserGroupIcon },
-  { name: 'Users', href: '/View/dashboard/users', icon: UserIcon },
-];
+  gestaoPessoas: {
+    title: 'Gestão de Pessoas',
+    items: [
+      {
+        name: 'Customers',
+        href: '/View/dashboard/customers',
+        icon: UserGroupIcon,
+      },
+      {
+        name: 'Users',
+        href: '/View/dashboard/users',
+        icon: UserIcon,
+      },
+    ],
+  },
+};
+
+function NavGroup({ title, links, isOpen, toggleOpen }) {
+  return (
+    <div className="mb-4">
+      <button
+        onClick={toggleOpen}
+        className="flex items-center justify-between w-full text-left p-3 text-sm font-medium text-gray-700 hover:bg-sky-100 hover:text-blue-600"
+      >
+        <span>{title}</span>
+        <span>{isOpen ? '−' : '+'}</span>
+      </button>
+      {isOpen && (
+        <div className="pl-4">
+          {links.map((link) => {
+            const LinkIcon = link.icon;
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={clsx(
+                  'flex items-center gap-2 p-2 text-sm font-medium hover:bg-sky-100 hover:text-blue-600',
+                  {
+                    'bg-sky-100 text-blue-600': usePathname() === link.href,
+                  }
+                )}
+              >
+                <LinkIcon className="w-5 h-5" />
+                <span>{link.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const [openGroups, setOpenGroups] = useState({
+    faturamento: false,
+    gestaoPessoas: false,
+  });
+
+  const toggleGroup = (group) => {
+    setOpenGroups((prevState) => ({
+      ...prevState,
+      [group]: !prevState[group],
+    }));
+  };
 
   return (
-    <>
-      {links.map((link) => {
-        const LinkIcon = link.icon;
-        return (
-          <Link
-            key={link.name}
-            href={link.href}
-           className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
-              {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              },
-            )}>
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </Link>
-        );
-      })}
-    </>
+    <aside className="w-64 p-4 bg-white border-r border-gray-200 h-full">
+      {/* Home link */}
+      <div className="mb-4">
+        <Link
+          href={links.home.href}
+          className={clsx(
+            'flex items-center gap-2 p-3 text-sm font-medium text-gray-700 hover:bg-sky-100 hover:text-blue-600',
+            {
+              'bg-sky-100 text-blue-600': pathname === links.home.href,
+            }
+          )}
+        >
+          <HomeIcon className="w-5 h-5" />
+          <span>Home</span>
+        </Link>
+      </div>
+
+      {/* Navigation groups */}
+      <NavGroup
+        title={links.faturamento.title}
+        links={links.faturamento.items}
+        isOpen={openGroups.faturamento}
+        toggleOpen={() => toggleGroup('faturamento')}
+      />
+      <NavGroup
+        title={links.gestaoPessoas.title}
+        links={links.gestaoPessoas.items}
+        isOpen={openGroups.gestaoPessoas}
+        toggleOpen={() => toggleGroup('gestaoPessoas')}
+      />
+    </aside>
   );
 }

@@ -92,6 +92,10 @@ export type CustomerField = {
   name: string;
 };
 
+export type GroupField = {
+  id_group: string;
+  description: string;
+};
 export type InvoiceForm = {
   id: string;
   customer_id: string;

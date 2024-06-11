@@ -111,7 +111,7 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                 Selecione o Grupo
                             </option>
                             {groups.map((group) => (
-                                <option  key={group.id_group} value={group.id_group}>
+                                <option key={group.id_group} value={group.id_group}>
                                     {group.description}
                                 </option>
                             ))}

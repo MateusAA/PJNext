@@ -129,15 +129,16 @@ export async function deleteInvoice(id: string) {
 const CreateUsers = z.object({
     name: z.string().nonempty({ message: 'Nome é obrigatório.' }),
     email: z.string().email({ message: 'Email inválido.' }),
+    id_grupo: z.string().nonempty({ message: 'Informe um grupo.' }),
     password: z.string().min(6, { message: 'Senha deve ter pelo menos 6 caracteres.' }),
 });
-
 
 export type formData = {
     errors?: {
         name?: string[];
         email?: string[];
         password?: string[];
+        grupo?: string[];
     };
     message?: string | null;
 };
@@ -146,15 +147,17 @@ export async function createUser(formData: FormData) {
     // Extraindo os dados do FormData
     const name = formData.get('name');
     const email = formData.get('email');
+    const id_grupo = formData.get('grupo');
     const password = formData.get('password');
 
     // Log dos dados recebidos para depuração
-    console.log('Dados recebidos:', { name, email, password });
+    console.log('Dados recebidos:', { name, email, id_grupo, password });
 
     // Validando os campos
     const validatedFields = CreateUsers.safeParse({
         name,
         email,
+        id_grupo,
         password,
     });
 
@@ -166,7 +169,7 @@ export async function createUser(formData: FormData) {
     }
 
 
-    const { name: validatedName, email: validatedEmail, password: validatedPassword } = validatedFields.data;
+    const { name: validatedName, email: validatedEmail, password: validatedPassword, id_grupo: validatedGroup } = validatedFields.data;
 
     // Gerando um salt e hash para a senha
     const saltRounds = 10; // Fator de custo do bcrypt
@@ -175,8 +178,8 @@ export async function createUser(formData: FormData) {
     // Tentando inserir os dados no banco de dados
     try {
         await sql`
-            INSERT INTO users (name, email, password)
-            VALUES (${validatedName}, ${validatedEmail}, ${hashedPassword})
+            INSERT INTO users (name, email, password, id_grupo)
+            VALUES (${validatedName}, ${validatedEmail}, ${hashedPassword}, ${validatedGroup})
         `;
     } catch (error) {
         return {

@@ -8,6 +8,7 @@ import {
   User,
   Revenue,
   InvoicesTable,
+  GroupField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -21,13 +22,13 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-     console.log('Fetching revenue data...');
-     await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log('Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
-     console.log('Data fetch completed after 3 seconds.');
-    
+    console.log('Data fetch completed after 3 seconds.');
+
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
@@ -38,7 +39,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   noStore();
   try {
-    
+
     const data = await sql<LatestInvoiceRaw>`
   SELECT invoices.amount, customers.name, customers.image_url, customers.email
   FROM invoices
@@ -52,7 +53,7 @@ export async function fetchLatestInvoices() {
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
-    
+
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
@@ -156,7 +157,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
-  
+
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -295,5 +296,24 @@ export async function fetchUsers() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
+  }
+}
+
+export async function fetchGroup() {
+  try {
+    const data = await sql<GroupField>`
+     SELECT
+        user_group.id_group,
+        user_group.description
+      FROM user_group
+      ORDER BY user_group.description DESC
+    `;
+
+    const group = data.rows;
+    console.log(group);
+    return group;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all group.');
   }
 }
