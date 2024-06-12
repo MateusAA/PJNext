@@ -9,6 +9,7 @@ import {
   Revenue,
   InvoicesTable,
   GroupField,
+  UsersForm,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -315,5 +316,33 @@ export async function fetchGroup() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all group.');
+  }
+}
+
+export async function fetchUsersById(id: string) {
+
+  try {
+    const data = await sql<UsersForm>`
+      SELECT
+        users.id,
+        users.name,
+        users.email,
+        users.password,
+        user_group.description
+      FROM users
+      JOIN user_group ON user_group.id_group = users.id_grupo
+      WHERE users.id = ${id};
+    `;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const users = data.rows;
+
+    console.log(users);
+    return users[0];
+
+  } catch (error) {
+
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoice.');
+
   }
 }

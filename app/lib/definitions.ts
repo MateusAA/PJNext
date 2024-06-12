@@ -67,6 +67,14 @@ export type UsersFilter = {
   description: string;
 };
 
+export type UsersForm = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  description: string;
+};
+
 export type CustomersTableType = {
   id: string;
   name: string;

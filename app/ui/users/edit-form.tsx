@@ -6,10 +6,11 @@ import { UserCircleIcon, ComputerDesktopIcon, HashtagIcon, UserGroupIcon } from 
 import { Button } from '@/app/ui/button';
 import { createUser } from '@/app/lib/actions';
 import { useRouter } from 'next/navigation';
-import { GroupField } from '@/app/lib/definitions';
+import { GroupField, UsersForm } from '@/app/lib/definitions';
 
-export default function Form({ groups }: { groups: GroupField[] }) {
+export default function Form({ user, groups }: { user: UsersForm; groups: GroupField[] }) {
 
+    console.log(user);
     console.log(groups);
 
     const [formData, setFormData] = useState({
@@ -60,7 +61,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                             name="name"
                             type="text"
                             placeholder="Informe o seu nome"
-                            value={formData.name}
+         
+                            defaultValue={user.name}
                             onChange={handleChange}
                             className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="customer-error"
@@ -82,7 +84,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                 name="email"
                                 type="email"
                                 placeholder="Informe o seu e-mail"
-                                value={formData.email}
+                              
+                                defaultValue={user.email}
                                 onChange={handleChange}
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="customer-error"
@@ -101,14 +104,14 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                         <select
                             id="grupo"
                             name="grupo"
-                            value={formData.grupo}
+                      
                             onChange={handleChange}
                             className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             defaultValue=""
                             aria-describedby="group-error"
                         >
-                            <option value="" disabled>
-                                Selecione o Grupo
+                            <option disabled defaultValue={user.description}>
+                                {user.description}
                             </option>
                             {groups.map((group) => (
                                 <option key={group.id_group} value={group.id_group}>
@@ -134,7 +137,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                 name="password"
                                 type="password"
                                 placeholder="Informe uma senha"
-                                value={formData.password}
+                     
+                                defaultValue={user.password}
                                 onChange={handleChange}
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="customer-error"
