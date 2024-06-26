@@ -328,7 +328,8 @@ export async function fetchUsersById(id: string) {
         users.name,
         users.email,
         users.password,
-        user_group.description
+        user_group.description,
+        users.id_grupo
       FROM users
       JOIN user_group ON user_group.id_group = users.id_grupo
       WHERE users.id = ${id};

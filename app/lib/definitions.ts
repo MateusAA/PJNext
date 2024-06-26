@@ -73,6 +73,7 @@ export type UsersForm = {
   email: string;
   password: string;
   description: string;
+  id_grupo: string;
 };
 
 export type CustomersTableType = {
