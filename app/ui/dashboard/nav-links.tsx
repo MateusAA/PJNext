@@ -4,12 +4,15 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  PhoneArrowDownLeftIcon,
 } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { userAgentFromString } from 'next/server';
+import { RectangleGroupIcon } from '@heroicons/react/24/outline';
 
 // Map of links organized by category
 const links = {
@@ -21,6 +24,11 @@ const links = {
         name: 'Invoices',
         href: '/View/dashboard/invoices',
         icon: DocumentDuplicateIcon,
+      },
+      {
+        name: 'CRM',
+        href: '/View/dashboard/CRM',
+        icon: PhoneArrowDownLeftIcon,
       },
     ],
   },
@@ -36,6 +44,11 @@ const links = {
         name: 'Users',
         href: '/View/dashboard/users',
         icon: UserIcon,
+      },
+      {
+        name: 'Grupo de Usuarios',
+        href: '/View/dashboard/users_group',
+        icon: RectangleGroupIcon,
       },
     ],
   },

@@ -261,3 +261,57 @@ export async function updateUser(formData: FormData) {
     revalidatePath('/View/dashboard/users');
     redirect('/View/dashboard/users');
 }
+
+// Validando formato dos campos
+const CreateUsersGroups = z.object({
+    description: z.string().nonempty({ message: 'Descrição é obrigatório.' }),
+   
+});
+
+
+export type formDataGroup = {
+    errors?: {
+        description?: string[];
+    };
+    message?: string | null;
+};
+
+export async function createUserGroups(formDataGroup: FormData) {
+    // Extraindo os dados do FormData
+    const description = formDataGroup.get('description')
+  
+
+    // Log dos dados recebidos para depuração
+    console.log('Dados recebidos:', { description });
+
+    // Validando os campos
+    const validatedFields = CreateUsersGroups.safeParse({
+        description
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create User.',
+        };
+    }
+
+
+    const { description: validatedDescription } = validatedFields.data;
+
+  
+    // Tentando inserir os dados no banco de dados
+    try {
+        await sql`
+            INSERT INTO user_group (description)
+            VALUES (${validatedDescription})
+        `;
+    } catch (error) {
+        return {
+            message: 'Database Error: Failed to Create User.'
+        };
+    }
+
+    revalidatePath('/View/dashboard/user_group');
+    redirect('/View/dashboard/user_group');
+}
