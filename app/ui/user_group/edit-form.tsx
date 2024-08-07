@@ -1,17 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { UserCircleIcon, ComputerDesktopIcon, HashtagIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createUserGroups } from '@/app/lib/actions';
+import { updateUserGroup } from '@/app/lib/actions';
 import { useRouter } from 'next/navigation';
 import { GroupField } from '@/app/lib/definitions';
 import { RectangleGroupIcon } from '@heroicons/react/24/solid';
 
-export default function Form() {
+export default function Form({ groups }: { groups: GroupField }) {
 
     const [formData, setFormData] = useState({
+        id_group:'',
         description: '',
     });
     const [errors, setErrors] = useState({});
@@ -25,23 +26,31 @@ export default function Form() {
         });
     };
 
+    useEffect(() => {
+        if (groups) {
+            setFormData({
+                description: groups.description || '',
+                id_group: groups.id_group || '',
+               
+            });
+        }
+    }, [groups]);
+
+
     const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = new FormData();
+        form.append('id_group', formData.id_group);
         form.append('description', formData.description);
+
+
+        const response = await updateUserGroup(form);
+
        
-
-        const response = await createUserGroups(form);
-
-        if (response.errors) {
-            setErrors(response.errors);
-        } else {
-            router.push('/View/dashboard/users');
-        }
     };
 
     return (
-        
+
         <form onSubmit={handleSubmit}>
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
                 {/* Nome do Cliente */}
@@ -50,6 +59,7 @@ export default function Form() {
                         Informe a descrição do grupo
                     </label>
                     <div className="relative">
+                        <input type="hidden" id="id_group" name="id_group" value={formData.id_group} />
                         <input
                             id="description"
                             name="description"
@@ -62,10 +72,10 @@ export default function Form() {
                         />
                         <RectangleGroupIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                     </div>
-                    {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+                    {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
                 </div>
 
-                
+
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Link
@@ -74,7 +84,7 @@ export default function Form() {
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Create</Button>
+                <Button type="submit">Edit</Button>
             </div>
         </form>
     );

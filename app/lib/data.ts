@@ -169,7 +169,7 @@ export async function fetchInvoiceById(id: string) {
       FROM invoices
       WHERE invoices.id = ${id};
     `;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
       // Convert amount from cents to dollars
@@ -307,7 +307,7 @@ export async function fetchGroup() {
         user_group.id_group,
         user_group.description
       FROM user_group
-      ORDER BY user_group.description DESC
+      ORDER BY user_group.description
     `;
 
     const group = data.rows;
@@ -334,11 +334,35 @@ export async function fetchUsersById(id: string) {
       JOIN user_group ON user_group.id_group = users.id_grupo
       WHERE users.id = ${id};
     `;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const users = data.rows;
 
     console.log(users);
     return users[0];
+
+  } catch (error) {
+
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoice.');
+
+  }
+}
+
+export async function fetchUsersGroupById(id: string) {
+
+  try {
+    const data = await sql<GroupField>`
+     SELECT
+        user_group.id_group,
+        user_group.description
+      FROM user_group
+      WHERE user_group.id_group = ${id};
+    `;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const group = data.rows;
+
+    console.log(group);
+    return group[0];
 
   } catch (error) {
 

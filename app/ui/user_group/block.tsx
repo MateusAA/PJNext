@@ -1,14 +1,18 @@
-
-
+import { useEffect, useState } from 'react';
 import { fetchGroup } from '@/app/lib/data';
 
-export default async function UsersGroupBlock() {
-    const users = await fetchGroup();
+export default async function UsersGroupBlock({
+    query,
+    currentPage,
+}: {
+    query: string;
+    currentPage: number;
+}) {
+    const invoices = await fetchGroup();
+    
     return (
         <div>
-            {users?.map((user) => (
-                <p key={user.id_group}>{(user.description)}</p>
-            ))}
+           
         </div>
     );
 }
