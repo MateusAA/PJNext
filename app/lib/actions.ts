@@ -7,6 +7,8 @@ import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import bcrypt from 'bcrypt';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export async function authenticate(
     prevState: string | undefined,
@@ -278,7 +280,7 @@ export async function updateUser(formData: FormData) {
 // Validando formato dos campos
 const CreateUsersGroups = z.object({
     description: z.string().nonempty({ message: 'Descrição é obrigatório.' }),
-   
+
 });
 
 
@@ -298,7 +300,7 @@ const UpdateUsersGroups = z.object({
 export async function createUserGroups(formDataGroup: FormData) {
     // Extraindo os dados do FormData
     const description = formDataGroup.get('description')
-  
+
 
     // Log dos dados recebidos para depuração
     console.log('Dados recebidos:', { description });
@@ -318,7 +320,7 @@ export async function createUserGroups(formDataGroup: FormData) {
 
     const { description: validatedDescription } = validatedFields.data;
 
-  
+
     // Tentando inserir os dados no banco de dados
     try {
         await sql`
@@ -339,7 +341,7 @@ export async function updateUserGroup(formData: FormData) {
     // Extraindo os dados do FormData
     const id_group = formData.get('id_group');
     const description = formData.get('description');
-    
+
 
     console.log('Dados recebidos:', { id_group, description });
 
@@ -358,20 +360,164 @@ export async function updateUserGroup(formData: FormData) {
 
     const { id_group: validatedId, description: validatedDescription } = validatedUp.data;
 
-       
-        try {
-            await sql`
+
+    try {
+        await sql`
             UPDATE user_group
             SET  description = ${validatedDescription}
             WHERE id_group = ${validatedId}
       `;
-        } catch (errors) {
-            return {
-                message: 'Database Error: Failed to Update User Group.'
-            };
-        }
-   
+    } catch (errors) {
+        return {
+            message: 'Database Error: Failed to Update User Group.'
+        };
+    }
+
 
     revalidatePath('/View/dashboard/users_group');
     redirect('/View/dashboard/users_group');
+}
+
+// Validando formato dos campos
+const CreateCustomer = z.object({
+    cpf: z.string(),
+    cnpj: z.string(),
+    nome: z.string(),
+    razao_social: z.string(),
+    nome_fantasia: z.string(),
+    rg: z.string(),
+    ie: z.string(),
+    image: z.string(),
+});
+
+export type formDataCustomer = {
+    errors?: {
+        cpf?: string[];
+        cnpj?: string[];
+        razao_social?: string[];
+        nome_fantasia?: string[];
+        rg?: string[];
+        ie?: string[];
+        image?: File[];
+    };
+    message?: string | null;
+};
+
+const CreateAndress = z.object({
+    id: z.number(),
+    rua: z.string(),
+    numero: z.string(),
+    cep: z.string(),
+    bairro: z.string(),
+    cidade: z.string(),
+    uf: z.string(),
+});
+
+const CreateContact = z.object({
+    id: z.number(),
+    id_resposavel: z.number(),
+    tel_cel: z.string(),
+    email: z.string(),
+});
+export async function createCustomer(formDataCustomer: FormData, formDataAndress: FormData, formDataContact: FormData) {
+    // Extraindo os dados do FormData e garantindo que são strings
+    const cpf = formDataCustomer.get('cpf') as string | null;
+    const cnpj = formDataCustomer.get('cnpj') as string | null;
+    const nome = formDataCustomer.get('nome') as string | null;
+    const razao_social = formDataCustomer.get('razao_social') as string | null;
+    const nome_fantasia = formDataCustomer.get('nome_fantasia') as string | null;
+    const rg = formDataCustomer.get('rg') as string | null;
+    const ie = formDataCustomer.get('ie') as string | null;
+    const image = formDataCustomer.get('image')
+
+    // Removendo pontos e traços do CPF e RG, se forem strings
+    const sanitizedCPF = cpf ? cpf.replace(/[.-]/g, '') : '';
+    const sanitizedRG = rg ? rg.replace(/[.-]/g, '') : '';
+
+    // Se houver uma imagem, salve-a na pasta 'uploads/images'
+    let imagePath = null;
+    if (image) {
+        const imageName = `${Date.now()}-${image}`;
+        const imageDir = path.join(process.cwd(), 'public/customers');
+        const fullImagePath = path.join(imageDir, imageName);
+
+        // Certifique-se de que o diretório existe
+        await fs.mkdir(imageDir, { recursive: true });
+
+        // Ler o arquivo e salvá-lo no diretório
+        const buffer = Buffer.from(await image.arrayBuffer());
+        await fs.writeFile(fullImagePath, buffer);
+
+        // Definindo o caminho para salvar no banco
+        imagePath = `/customers/${imageName}`;
+    }
+
+    // Validando os campos
+    const validatedFields = CreateCustomer.safeParse({
+        cnpj,
+        cpf: sanitizedCPF,
+        razao_social,
+        nome_fantasia,
+        nome,
+        ie,
+        rg: sanitizedRG,
+        image: imagePath,
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create User.',
+        };
+    }
+
+
+    const {
+        cnpj: validatedCNPJ,
+        cpf: validatedCPF,
+        nome: validatedName,
+        razao_social: validatedRazao,
+        nome_fantasia: validatedFantasia,
+        ie: validatedIE,
+        rg: validatedRG,
+        image: validatedImage
+    } = validatedFields.data;
+
+    if (validatedCPF == '' && validatedCNPJ != '') {
+
+        try {
+            await sql`
+            INSERT INTO customers (cnpj, razao_social, nome_fantasia, ie, image_url)
+            VALUES ( ${validatedCNPJ}, ${validatedRazao}, ${validatedFantasia}, ${validatedIE}, ${validatedImage})
+        `;
+
+        
+
+        } catch (error) {
+
+            return {
+                message: 'Database Error: Failed to Create Customer.'
+            };
+
+        }
+
+    } else {
+
+        try {
+
+            await sql`
+            INSERT INTO customers (name, cpf, rg, image_url)
+            VALUES (${validatedName}, ${validatedCPF}, ${validatedRG}, ${validatedImage})`
+       
+        } catch (error) {
+
+            return {
+                message: 'Database Error: Failed to Create Customer.'
+            };
+
+        }
+    }
+
+    revalidatePath('/View/dashboard/customers');
+    redirect('/View/dashboard/customers');
 }
