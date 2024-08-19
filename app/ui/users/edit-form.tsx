@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { UserCircleIcon, ComputerDesktopIcon, HashtagIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { updateUser } from '@/app/lib/actions';
+import { updateUser } from '@/app/lib/users/action';
 import { useRouter } from 'next/navigation';
 import { GroupField, UsersForm } from '@/app/lib/definitions';
 

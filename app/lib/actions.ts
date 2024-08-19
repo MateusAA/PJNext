@@ -29,21 +29,21 @@ export async function authenticate(
     }
 }
 
-const FormSchema = z.object({
-    id: z.string(),
-    customerId: z.string({
-        invalid_type_error: 'Please select a customer.',
-    }),
-    amount: z.coerce.number().gt(
-        0, { message: 'Please enter an amount greater than $0.' }
-    ),
-    status: z.enum(['pending', 'paid'], { invalid_type_error: 'Please select an invoice status.', }),
-    date: z.string(),
-});
+    const FormSchema = z.object({
+        id: z.string(),
+        customerId: z.string({
+            invalid_type_error: 'Please select a customer.',
+        }),
+        amount: z.coerce.number().gt(
+            0, { message: 'Please enter an amount greater than $0.' }
+        ),
+        status: z.enum(['pending', 'paid'], { invalid_type_error: 'Please select an invoice status.', }),
+        date: z.string(),
+    });
 
-// Use Zod to update the expected types
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
+    // Use Zod to update the expected types
+    const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+    const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
 
 
@@ -428,7 +428,7 @@ export async function createCustomer(formDataCustomer: FormData, formDataAndress
     const nome_fantasia = formDataCustomer.get('nome_fantasia') as string | null;
     const rg = formDataCustomer.get('rg') as string | null;
     const ie = formDataCustomer.get('ie') as string | null;
-    const image = formDataCustomer.get('image')
+    const image = formDataCustomer.get('image') as File | null;
 
     // Removendo pontos e traços do CPF e RG, se forem strings
     const sanitizedCPF = cpf ? cpf.replace(/[.-]/g, '') : '';
@@ -437,19 +437,20 @@ export async function createCustomer(formDataCustomer: FormData, formDataAndress
     // Se houver uma imagem, salve-a na pasta 'uploads/images'
     let imagePath = null;
     if (image) {
-        const imageName = `${Date.now()}-${image}`;
+        const imageName = `${image.name}`; // Nome do arquivo com timestamp para evitar conflitos
         const imageDir = path.join(process.cwd(), 'public/customers');
         const fullImagePath = path.join(imageDir, imageName);
 
         // Certifique-se de que o diretório existe
         await fs.mkdir(imageDir, { recursive: true });
 
-        // Ler o arquivo e salvá-lo no diretório
+        // Salvar o arquivo diretamente no diretório
         const buffer = Buffer.from(await image.arrayBuffer());
         await fs.writeFile(fullImagePath, buffer);
 
         // Definindo o caminho para salvar no banco
         imagePath = `/customers/${imageName}`;
+    
     }
 
     // Validando os campos
