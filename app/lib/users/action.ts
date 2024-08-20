@@ -132,10 +132,10 @@ export async function updateUser(formData: FormData) {
     } else {
         try {
             await sql`
-    UPDATE users
-    SET name = ${validatedName}, email = ${validatedEmail}, id_grupo = ${validatedGroup}
-    WHERE id = ${validatedId}
-  `;
+                UPDATE users
+                SET name = ${validatedName}, email = ${validatedEmail}, id_grupo = ${validatedGroup}
+                WHERE id = ${validatedId}
+            `;
         } catch (errors) {
             return {
                 message: 'Database Error: Failed to Update Invoice.'

@@ -12,20 +12,24 @@ import {
     PowerIcon,
     BanknotesIcon,
     CogIcon,
-    CubeIcon
+    CubeIcon,
+    MapIcon,
+    PhoneIcon,
+    IdentificationIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createCustomer } from '@/app/lib/actions';
+import { createCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
-  
+
 
     const [documentType, setDocumentType] = useState('cpf');
 
 
     const [formData, setFormData] = useState({
+        documentType: 'cpf',
         cpf: '',
         cnpj: '',
         nome: '',
@@ -43,7 +47,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         responsavel: '',
         tel_cel: '',
         email: ''
-        
+
     });
     const [errors, setErrors] = useState({});
     const router = useRouter();
@@ -71,7 +75,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
     const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formCustomer = new FormData();
-        formCustomer.append('cpf', formData.cpf)    
+        formCustomer.append('cpf', formData.cpf)
         formCustomer.append('cnpj', formData.cnpj);
         formCustomer.append('nome', formData.nome);
         formCustomer.append('razao_social', formData.razao_social);
@@ -94,9 +98,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         formContact.append('tel_cel', formData.tel_cel);
         formContact.append('email', formData.email);
 
-
+        const formInput = new FormData();
+        formInput.append('documentType', formData.documentType);
 
         const response = await createCustomer(
+            formInput,
             formCustomer,
             formAndress,
             formContact
@@ -105,7 +111,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         if (response.errors) {
             setErrors(response.errors);
         } else {
-            router.push('/View/dashboard/users');
+            router.push('/View/dashboard/customers');
         }
     };
 
@@ -127,10 +133,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                             <select
                                 id="documentType"
                                 name="documentType"
-                                
                                 className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 value={documentType}
-                                onChange={(e) => setDocumentType(e.target.value)}
+                                onChange={(e) => {
+                                    setDocumentType(e.target.value);
+                                    setFormData({
+                                        ...formData,
+                                        documentType: e.target.value,
+                                    });
+                                }}
                             >
                                 <option value="cpf" >CPF</option>
                                 <option value="cnpj">CNPJ</option>
@@ -138,6 +149,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                             <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+
                     </div>
 
 
@@ -159,8 +171,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                         placeholder="Enter CPF"
 
                                     />
-                                    <PowerIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                    <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
+                                {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf}</span>}
+
                             </div>
                         ) : (
                             <div>
@@ -172,15 +186,18 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                         mask="99.999.999/9999-99"
                                         id="cnpj"
                                         name="cnpj"
-                                            value={formData.cnpj}
-                                            onChange={handleChange}
+                                        value={formData.cnpj}
+                                        onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Enter CNPJ"
                                     />
                                     <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
+                                {errors.cnpj && <span className="text-red-500 text-sm">{errors.cnpj}</span>}
                             </div>
+
                         )}
+
                     </div>
                 </div>
 
@@ -203,8 +220,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                         placeholder="Nome"
 
                                     />
-                                    <PowerIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                    <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
+                                {errors.nome && <span className="text-red-500 text-sm">{errors.nome}</span>}
+
                             </div>
                         ) : (
                             <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -217,13 +236,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                             mask=""
                                             id="razao_social"
                                             name="razao_social"
-                                                value={formData.razao_social}
-                                                onChange={handleChange}
+                                            value={formData.razao_social}
+                                            onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                             placeholder="Razão Social"
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
+                                    {errors.razao_social && <span className="text-red-500 text-sm">{errors.razao_social}</span>}
+
                                 </div>
                                 <div className="flex-1">
                                     <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
@@ -234,13 +255,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                             mask=""
                                             id="nome_fantasia"
                                             name="nome_fantasia"
-                                                value={formData.nome_fantasia}
-                                                onChange={handleChange}
+                                            value={formData.nome_fantasia}
+                                            onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                             placeholder="Nome Fantasia"
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
+                                    {errors.nome_fantasia && <span className="text-red-500 text-sm">{errors.nome_fantasia}</span>}
+
                                 </div>
                             </div>
                         )}
@@ -261,8 +284,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Registro Geral"
                                     />
-                                    <PowerIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                    <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
+                                {errors.rg && <span className="text-red-500 text-sm">{errors.rg}</span>}
+
                             </div>
                         ) : (
                             <div>
@@ -274,8 +299,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                         mask="999.999.999.999"
                                         id="ie"
                                         name="ie"
-                                            value={formData.ie}
-                                            onChange={handleChange}
+                                        value={formData.ie}
+                                        onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Inscrição Estadual"
 
@@ -283,6 +308,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
 
                                     <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
+                                {errors.ie && <span className="text-red-500 text-sm">{errors.ie}</span>}
+
                             </div>
                         )}
                     </div>
@@ -333,9 +360,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="CEP - 00000-000"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.cep && <span className="text-red-500 text-sm">{errors.cep}</span>}
+
                     </div>
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -351,9 +380,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="Avenida - Rua - Estrada"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.rua && <span className="text-red-500 text-sm">{errors.rua}</span>}
+
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -371,9 +402,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="0000"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.numero && <span className="text-red-500 text-sm">{errors.numero}</span>}
 
                     </div>
                     <div className="flex-1">
@@ -390,9 +422,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="Jardim - Vila - Portal"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.bairro && <span className="text-red-500 text-sm">{errors.bairro}</span>}
+
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -408,9 +442,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="São Paulo"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.cidade && <span className="text-red-500 text-sm">{errors.cidade}</span>}
+
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -426,9 +462,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder="SP - RJ - PR"
                             />
 
-                            <CubeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.uf && <span className="text-red-500 text-sm">{errors.uf}</span>}
+
                     </div>
                 </div>
                 <br />
@@ -448,13 +486,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 value={formData.responsavel}
                                 onChange={handleChange}
                                 className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                >
+                            >
                                 <option value=" " >Selecione um responsavel</option>
                                 <option value="01">Verenancio</option>
                             </select>
-                            <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.id_responsavel && <span className="text-red-500 text-sm">{errors.id_responsavel}</span>}
+
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -469,11 +509,13 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                 mask="(99) 99999-9999"
                                 placeholder='(99) 99999-9999'
-                           />
-                                
-                            <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            />
+
+                            <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.tel_cel && <span className="text-red-500 text-sm">{errors.tel_cel}</span>}
+
                     </div>
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -490,9 +532,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 placeholder='@nextmail.com'
                             />
 
-                            <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                            <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
+
                     </div>
                 </div>
             </div>

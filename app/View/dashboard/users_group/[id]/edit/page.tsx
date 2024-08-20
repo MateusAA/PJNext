@@ -1,6 +1,6 @@
 import Form from '@/app/ui/user_group/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchUsersGroupById, fetchGroup } from '@/app/lib/data';
+import { fetchUsersGroupById } from '@/app/lib/users_group/data';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {

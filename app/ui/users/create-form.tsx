@@ -18,7 +18,9 @@ export default function Form({ groups }: { groups: GroupField[] }) {
         grupo: '',
         password: ''
     });
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({
+        
+    });
     const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

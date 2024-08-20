@@ -1,6 +1,6 @@
 import Form from '@/app/ui/users/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchGroup } from '@/app/lib/data';
+import { fetchGroup } from '@/app/lib/users_group/data';
 
 export default async function Page() {
     const groups = await fetchGroup();

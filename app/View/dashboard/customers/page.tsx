@@ -5,7 +5,7 @@ import { CreateCustomers } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/font';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredCustomers } from '@/app/lib/data';
+import { fetchFilteredCustomers } from '@/app/lib/customers/data';
 import { Metadata } from 'next';
 
 export default async function Page ({
