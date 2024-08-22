@@ -2,6 +2,7 @@ import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/invoices/action';
 import { deleteGroupUsers } from '@/app/lib/users_group/action'
+import { deleteCustomer } from '@/app/lib/customers/action'
 
 export function CreateInvoice() {
   return (
@@ -19,7 +20,7 @@ export function UpdateInvoice({ id }: { id: string }) {
   return (
     <Link
       href={`/View/dashboard/invoices/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-green-100"
     >
       <PencilIcon className="w-5" />
     </Link>
@@ -30,7 +31,7 @@ export function UpdateUsers({ id }: { id: string }) {
   return (
     <Link
       href={`/View/dashboard/users/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-green-100"
     >
       <PencilIcon className="w-5" />
     </Link>
@@ -41,7 +42,7 @@ export function DeleteInvoice({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id);
   return (
     <form action={deleteInvoiceWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
+      <button className="rounded-md border p-2 hover:bg-red-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
@@ -77,7 +78,7 @@ export function DeleteGroupUsers({ id }: { id: string }) {
   const deleteGroupWithId = deleteGroupUsers.bind(null, id);
   return (
     <form action={deleteGroupWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
+      <button className="rounded-md border p-2 hover:bg-red-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
@@ -88,7 +89,7 @@ export function UpdateUsersGroup({ id }: { id: string }) {
   return (
     <Link
       href={`/View/dashboard/users_group/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-green-100"
     >
       <PencilIcon className="w-5" />
     </Link>
@@ -108,10 +109,10 @@ export function CreateCustomers() {
 }
 
 export function DeleteCustomers({ id }: { id: string }) {
-  const deleteGroupWithId = deleteGroupUsers.bind(null, id);
+  const deleteCustomerWithId = deleteCustomer.bind(null, id);
   return (
-    <form action={deleteGroupWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
+    <form action={deleteCustomerWithId}>
+      <button className="rounded-md border p-2 hover:bg-red-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
@@ -121,8 +122,8 @@ export function DeleteCustomers({ id }: { id: string }) {
 export function UpdateCustomers({ id }: { id: string }) {
   return (
     <Link
-      href={`/View/dashboard/users_group/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      href={`/View/dashboard/customers/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-green-100"
     >
       <PencilIcon className="w-5" />
     </Link>

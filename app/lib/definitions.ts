@@ -100,6 +100,12 @@ export type CustomerField = {
   id: string;
   name: string;
 };
+export type CustomerFilterCPF = {
+  cpf: string;
+};
+export type CustomerFilterCNPJ = {
+  cnpj: string;
+};
 
 export type GroupField = {
   id_group: string;
@@ -112,4 +118,25 @@ export type InvoiceForm = {
   status: 'pending' | 'paid';
 };
 
+export type CustomersForm = {
+  id: string;
+  name: string;
+  email: string;
+  cpf: string;
+  rg: string;
+  cnpj: string;
+  razao_social: string;
+  nome_fantasia: string;
+  ie: string;
+  contact_id: string;
+  tel_cel: string;
+  andress_id : string;
+  rua: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  cep: string;
+  id_responsavel: string;
+};
 

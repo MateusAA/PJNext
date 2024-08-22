@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField } from '@/app/lib/definitions';
+import { CustomersForm } from '@/app/lib/definitions';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import InputMask from 'react-input-mask';
@@ -18,17 +18,22 @@ import {
     IdentificationIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { CreateCustomer } from '@/app/lib/customers/action';
+import { UpdateCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form({ customer }:{customer: CustomersForm}) {
 
+    console.log(customer);
 
+   
+
+    //Inicio do processo de criação do cliente
     const [documentType, setDocumentType] = useState('cpf');
 
 
     const [formData, setFormData] = useState({
+        id: '',
         documentType: 'cpf',
         cpf: '',
         cnpj: '',
@@ -49,10 +54,41 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         email: ''
 
     });
+
+
+    //Inicio do processo edit do cliente
+
+    // UseEffect para inicializar o formData com os dados do user
+    useEffect(() => {
+        if (customer) {
+            setFormData({
+                id: customer.id || '',
+                nome: customer.name || '',
+                email: customer.email || '',
+                cpf: customer.cpf || '', // suposição que `id_group` é o ID do grupo
+                rg: customer.rg || '', // suposição que `id_group` é o ID do grupo
+                razao_social: customer.razao_social || '', // suposição que `id_group` é o ID do grupo
+                nome_fantasia: customer.nome_fantasia || '', // suposição que `id_group` é o ID do grupo
+                cnpj: customer.cnpj || '', // suposição que `id_group` é o ID do grupo
+                ie: customer.ie || '', // suposição que `id_group` é o ID do grupo
+                tel_cel: customer.tel_cel || '', // suposição que `id_group` é o ID do grupo
+                rua: customer.rua || '', // suposição que `id_group` é o ID do grupo
+                numero: customer.numero || '', // suposição que `id_group` é o ID do grupo
+                bairro: customer.bairro || '', // suposição que `id_group` é o ID do grupo
+                cidade: customer.cidade || '', // Mantém a senha em branco por questões de segurança
+                uf: customer.uf || '', // Mantém a senha em branco por questões de segurança
+                cep: customer.cep || '', // Mantém a senha em branco por questões de segurança
+                responsavel: customer.id_responsavel || '', // Mantém a senha em branco por questões de segurança
+        
+            });
+        }
+    }, [customer]);
+
+
     const [errors, setErrors] = useState({});
     const [globalError, setGlobalError] = useState<string | null>(null);
     const errorRef = useRef<HTMLDivElement | null>(null);
-    
+
     const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -106,11 +142,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         const formInput = new FormData();
         formInput.append('documentType', formData.documentType);
 
-        const response = await CreateCustomer(
+        const idCustomer = customer.id;
+
+        const response = await UpdateCustomer(
             formInput,
             formCustomer,
             formAndress,
-            formContact
+            formContact,
+            idCustomer            
         );
 
 
@@ -131,12 +170,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, [globalError]);
+    //Fim do processo de criação de cliente
+
 
     return (
         <form onSubmit={handleSubmit}>
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
-                {globalError  && (
-                    <div  ref={errorRef} className="bg-red-500 text-white p-4 mb-4 rounded">
+                {globalError && (
+                    <div ref={errorRef} className="bg-red-500 text-white p-4 mb-4 rounded">
                         {globalError}
                     </div>
                 )}
@@ -568,7 +609,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                 >
                     Cancel
                 </Link>
-                <Button type="submit">Create Customers</Button>
+                <Button type="submit">Edit Customers</Button>
             </div>
         </form >
 
