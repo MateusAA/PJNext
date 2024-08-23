@@ -29,7 +29,7 @@ export async function fetchCustomers() {
       FROM customers
       ORDER BY name ASC
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const customers = data.rows;
         return customers;
     } catch (err) {
@@ -57,7 +57,7 @@ export async function fetchFilteredCustomers(query: string) {
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `;
-
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const customers = data.rows.map((customer) => ({
             ...customer,
             total_pending: formatCurrency(customer.total_pending),
@@ -122,14 +122,17 @@ export async function fetchCustomersById(id: string) {
             cus.ie,
             cus.rg,
             tcc.customer_id,
-            tcc.tel_cel
-        FROM customers cus
-        INNER JOIN tb_costumer_andress tca ON cus.id = tca.customer_id::uuid
-        INNER JOIN tb_costumer_contact tcc ON cus.id = tcc.customer_id::uuid
-        WHERE cus.id = ${id}
+            tcc.tel_cel,
+            tcc.id_responsavel,
+            us.name AS nameRes
+            FROM customers cus
+            INNER JOIN tb_costumer_andress tca ON cus.id::UUID = tca.customer_id::UUID
+            INNER JOIN tb_costumer_contact tcc ON cus.id::UUID = tcc.customer_id::UUID
+            INNER JOIN users us ON us.id::UUID = tcc.id_responsavel::UUID
+            WHERE cus.id = ${id}
  
     `;
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         const customer = data.rows;
 
         console.log(customer);

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomersForm } from '@/app/lib/definitions';
+import { CustomersForm, UsersRespon } from '@/app/lib/definitions';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import InputMask from 'react-input-mask';
@@ -22,11 +22,11 @@ import { UpdateCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 
-export default function Form({ customer }:{customer: CustomersForm}) {
+export default function Form({ customer, usersVender }: { customer: CustomersForm, usersVender: UsersRespon[] }) {
 
     console.log(customer);
 
-   
+
 
     //Inicio do processo de criação do cliente
     const [documentType, setDocumentType] = useState('cpf');
@@ -34,6 +34,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
 
     const [formData, setFormData] = useState({
         id: '',
+        nameRes: '',
         documentType: 'cpf',
         cpf: '',
         cnpj: '',
@@ -62,6 +63,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
     useEffect(() => {
         if (customer) {
             setFormData({
+                documentType: 'cpf',
                 id: customer.id || '',
                 nome: customer.name || '',
                 email: customer.email || '',
@@ -79,7 +81,8 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                 uf: customer.uf || '', // Mantém a senha em branco por questões de segurança
                 cep: customer.cep || '', // Mantém a senha em branco por questões de segurança
                 responsavel: customer.id_responsavel || '', // Mantém a senha em branco por questões de segurança
-        
+                nameRes: customer.nameRes || '', // Mantém a senha em branco por questões de segurança
+
             });
         }
     }, [customer]);
@@ -149,7 +152,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
             formCustomer,
             formAndress,
             formContact,
-            idCustomer            
+            idCustomer
         );
 
 
@@ -231,6 +234,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                         onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Enter CPF"
+                                        disabled
 
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -252,6 +256,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                         onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Enter CNPJ"
+                                        disabled
                                     />
                                     <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
@@ -280,6 +285,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                         onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Nome"
+                                        
 
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -302,6 +308,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                             onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                             placeholder="Razão Social"
+                                            
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
@@ -321,6 +328,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                             onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                             placeholder="Nome Fantasia"
+                                            
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
@@ -345,6 +353,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                         onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Registro Geral"
+                                        disabled
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
@@ -365,6 +374,7 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                         onChange={handleChange}
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Inscrição Estadual"
+                                        disabled
 
                                     />
 
@@ -549,8 +559,12 @@ export default function Form({ customer }:{customer: CustomersForm}) {
                                 onChange={handleChange}
                                 className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             >
-                                <option value=" " >Selecione um responsavel</option>
-                                <option value="01">Verenancio</option>
+                                <option value="" disabled>Selecione um responsavel</option>
+                                {usersVender.map((response) => (
+                                    <option key={response.id} value={response.id}>
+                                        {response.name}
+                                    </option>
+                                ))}
                             </select>
                             <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 

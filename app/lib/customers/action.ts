@@ -208,7 +208,7 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
 
     const sanitizedTEL = tel_cel ? tel_cel.replace(/[() .-]/g, '') : '';
 
-    const validatedFieldContact =   CreateContact.safeParse({
+    const validatedFieldContact = CreateContact.safeParse({
         tel_cel: sanitizedTEL,
         id_responsavel,
         email
@@ -443,10 +443,6 @@ export async function UpdateCustomer(formInput: FormData, formDataCustomer: Form
 
     }
 
-
-
-
-
     //Fim - validnando campos dados do cliente
 
     //Inicio - validnando campos endereço do cliente
@@ -509,81 +505,105 @@ export async function UpdateCustomer(formInput: FormData, formDataCustomer: Form
 
     } = validatedFieldContact.data;
     //Fim - validnando campos contato do cliente
+    if (validatedImage != '') {
+        if (input === 'cpf') {
 
-    if (input === 'cpf') {
-
-
-        const resul = await fetchCPForCNPJ(validatedCPF, input);
-
-
-
-        if (resul.length > 0) {
-            return {
-                message: 'CPF já cadastrado.',
-            };
-        } else {
             try {
-
 
                 // Inserindo com CPF
                 const result = await sql`
-            INSERT INTO customers (name, email, cpf, rg, image_url)
-            VALUES (${validatedName}, ${validatedMail}, ${validatedCPF}, ${validatedRG}, ${validatedImage})
-            RETURNING id`;
-
-                insertedId = result.rows[0].id;
-
+                UPDATE customers 
+                    SET name = ${validatedName},
+                        email = ${validatedEmail},
+                        cpf = ${validatedCPF},
+                        rg = ${validatedRG},
+                        image_url = ${validatedImage}
+                    WHERE id = ${id} `;
 
             } catch (error) {
                 return {
-                    message: 'Database Error: Failed to Create Customer.'
+                    message: 'Database Error: Failed to Update Customer.'
                 };
             }
-        }
-    } else {
 
-        const cn = 'cnpj';
-
-        const resul = await fetchCPForCNPJ(validatedCNPJ, cn);
-
-
-
-        if (resul.length > 0) {
-            return {
-                message: 'CNPJ já cadastrado.',
-            };
         } else {
-
-
 
             try {
 
                 // Inserindo com CNPJ
                 const result = await sql`
-            INSERT INTO customers (cnpj, razao_social, nome_fantasia, ie, image_url)
-            VALUES (${validatedCNPJ}, ${validatedRazao}, ${validatedFantasia}, ${validatedIE}, ${validatedImageEmp})
-            RETURNING id`;
-
-                insertedId = result.rows[0].id;
-
+                UPDATE customers
+                    SET cnpj = ${validatedCNPJ},
+                        razao_social = ${validatedRazao},
+                        nome_fantasia = ${validatedFantasia},
+                        ie = ${validatedIE},
+                        image_url = ${validatedImageEmp}
+                    WHERE id = ${id} 
+                `;
 
             } catch (error) {
                 return {
                     message: 'Database Error: Failed to Create Customer.'
                 };
             }
+
+        }
+    } else {
+        if (input === 'cpf') {
+
+            try {
+
+                // Inserindo com CPF
+                const result = await sql`
+                UPDATE customers 
+                    SET name = ${validatedName},
+                        email = ${validatedEmail},
+                        cpf = ${validatedCPF},
+                        rg = ${validatedRG}
+                    WHERE id = ${id} `;
+
+            } catch (error) {
+                return {
+                    message: 'Database Error: Failed to Update Customer.'
+                };
+            }
+
+        } else {
+
+            try {
+
+                // Inserindo com CNPJ
+                const result = await sql`
+                UPDATE customers
+                    SET cnpj = ${validatedCNPJ},
+                        razao_social = ${validatedRazao},
+                        nome_fantasia = ${validatedFantasia},
+                        ie = ${validatedIE}
+                    WHERE id = ${id} 
+                `;
+
+            } catch (error) {
+                return {
+                    message: 'Database Error: Failed to Create Customer.'
+                };
+            }
+
         }
     }
-
-    insertedId
-
 
     try {
 
         // Inserindo endereço do cliente
         await sql`
-            INSERT INTO tb_costumer_andress (customer_id, rua, numero, cidade, uf, cep, bairro)
-            VALUES (${insertedId}, ${validatedRua}, ${validatedN}, ${validatedCidade}, ${validatedUF}, ${validatedCEP}, ${validatedBairro} )`;
+         UPDATE tb_costumer_andress
+            SET rua = ${validatedRua},
+                numero = ${validatedN},
+                cidade = ${validatedCidade},
+                uf = ${validatedUF},
+                cep = ${validatedCEP},
+                bairro = ${validatedBairro}
+            WHERE customer_id = ${id} 
+            `;
 
     } catch (error) {
         return {
@@ -591,14 +611,16 @@ export async function UpdateCustomer(formInput: FormData, formDataCustomer: Form
         };
     }
 
-
-
     try {
 
         // Inserindo endereço do cliente
         await sql`
-            INSERT INTO tb_costumer_contact (customer_id, id_responsavel, tel_cel, email)
-            VALUES (${insertedId}, ${validatedResponsavel}, ${validatedTel}, ${validatedEmail})`;
+         UPDATE tb_costumer_contact
+            SET id_responsavel = ${validatedResponsavel},
+                tel_cel = ${validatedTel},
+                email = ${validatedEmail}
+            WHERE customer_id = ${id} 
+        `;
 
     } catch (error) {
         return {

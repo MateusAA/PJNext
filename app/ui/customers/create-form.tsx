@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField } from '@/app/lib/definitions';
+import { CustomerField, UsersForm, UsersRespon } from '@/app/lib/definitions';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import InputMask from 'react-input-mask';
@@ -22,7 +22,7 @@ import { CreateCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
 
 
     const [documentType, setDocumentType] = useState('cpf');
@@ -509,7 +509,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                                 className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             >
                                 <option value=" " >Selecione um responsavel</option>
-                                <option value="01">Verenancio</option>
+                                {usersVender.map((response) => (
+                                    <option key={response.id} value={response.id}>
+                                        {response.name}
+                                    </option>
+                                ))}
                             </select>
                             <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 

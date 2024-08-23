@@ -76,6 +76,12 @@ export type UsersForm = {
   id_grupo: string;
 };
 
+export type UsersRespon = {
+  id: string;
+  name: string;
+
+};
+
 export type CustomersTableType = {
   id: string;
   name: string;
@@ -138,5 +144,6 @@ export type CustomersForm = {
   uf: string;
   cep: string;
   id_responsavel: string;
+  nameRes : string;
 };
 

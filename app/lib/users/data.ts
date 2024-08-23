@@ -10,6 +10,7 @@ import {
     InvoicesTable,
     GroupField,
     UsersForm,
+    UsersRespon
 } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -18,6 +19,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 export async function getUser(email: string) {
     try {
         const user = await sql`SELECT * FROM users WHERE email=${email}`;
+        
         return user.rows[0] as User;
     } catch (error) {
         console.error('Failed to fetch user:', error);
@@ -43,7 +45,7 @@ export async function fetchFilteredUsers(
       ORDER BY users.name DESC
     `;
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         return users.rows;
 
     } catch (error) {
@@ -66,7 +68,7 @@ export async function fetchUsers() {
       JOIN user_group ON user_group.id_group = users.id_grupo
       ORDER BY users.name DESC
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 10));
         const user = data.rows;
         return user;
     } catch (err) {
@@ -101,6 +103,29 @@ export async function fetchUsersById(id: string) {
 
         console.error('Database Error:', error);
         throw new Error('Failed to fetch invoice.');
+
+    }
+}
+
+export async function fetchUsersByIdVendedor() {
+
+    try {
+        const data = await sql<UsersRespon>`
+      SELECT
+        users.id,
+        users.name
+      FROM users
+      JOIN user_group ON user_group.id_group = users.id_grupo
+      WHERE id_group = '5' ;
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const users = data.rows;
+        return users;
+
+    } catch (error) {
+
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch.');
 
     }
 }
