@@ -5,6 +5,8 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
   PhoneArrowDownLeftIcon,
+  BookmarkIcon,
+  CheckIcon
 } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
@@ -23,23 +25,13 @@ const links = {
       {
         name: 'Invoices',
         href: '/View/dashboard/invoices',
-        icon: DocumentDuplicateIcon,
-      },
-      {
-        name: 'CRM',
-        href: '/View/dashboard/CRM',
-        icon: PhoneArrowDownLeftIcon,
+        icon: BookmarkIcon,
       },
     ],
   },
   gestaoPessoas: {
-    title: 'Gestão de Pessoas',
+    title: 'Administração de Usuarios',
     items: [
-      {
-        name: 'Customers',
-        href: '/View/dashboard/customers',
-        icon: UserGroupIcon,
-      },
       {
         name: 'Users',
         href: '/View/dashboard/users',
@@ -49,6 +41,26 @@ const links = {
         name: 'Grupo de Usuarios',
         href: '/View/dashboard/users_group',
         icon: RectangleGroupIcon,
+      },
+    ],
+  },
+  CRM: {
+    title: 'CRM',
+    items: [
+      {
+        name: 'Customers',
+        href: '/View/dashboard/customers',
+        icon: UserGroupIcon,
+      },
+      {
+        name: 'Contatos',
+        href: '/View/dashboard/contato',
+        icon: PhoneArrowDownLeftIcon,
+      },
+      {
+        name: 'Aprovação',
+        href: '/View/dashboard/aprovacao',
+        icon: CheckIcon,
       },
     ],
   },
@@ -95,6 +107,7 @@ export default function NavLinks() {
   const [openGroups, setOpenGroups] = useState({
     faturamento: false,
     gestaoPessoas: false,
+    CRM: false,
   });
 
   const toggleGroup = (group) => {
@@ -134,6 +147,12 @@ export default function NavLinks() {
         links={links.gestaoPessoas.items}
         isOpen={openGroups.gestaoPessoas}
         toggleOpen={() => toggleGroup('gestaoPessoas')}
+      />
+      <NavGroup
+        title={links.CRM.title}
+        links={links.CRM.items}
+        isOpen={openGroups.CRM}
+        toggleOpen={() => toggleGroup('CRM')}
       />
     </aside>
   );

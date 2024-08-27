@@ -1,17 +1,18 @@
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/customers/table';
+import CustomersTableAg from '@/app/ui/aprovacao/tableAg';
+import CustomersTableRep from '@/app/ui/aprovacao/tableRep';
 import { CreateCustomers } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/font';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredCustomers } from '@/app/lib/customers/data';
+import { fetchFilteredCustomersAprov } from '@/app/lib/aprovacao/data';
 import { Metadata } from 'next';
 
-export default async function Page ({
+export default async function Page({
     searchParams,
 }: {
-    searchParams ?: {
+    searchParams?: {
         query?: string;
         page?: string;
     };
@@ -19,19 +20,23 @@ export default async function Page ({
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
 
-    const customers = await fetchFilteredCustomers(query);
+    const customers = await fetchFilteredCustomersAprov(query);
 
     return (
         <div className="w-full">
             <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-                Customers
+                Customer Approval
             </h1>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-            <Search placeholder="Search customers..." />
-            <CreateCustomers />
-            </div>
+
             {<Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-            <Table customers={customers} />
+                <div className='flex'>
+                    <div className='w-1/2 p-5'>
+                        <CustomersTableAg customers={customers} />
+                    </div>
+                    <div className='w-1/2 p-5'>
+                        <CustomersTableRep customers={customers} />
+                    </div>
+                </div>
             </Suspense>}
         </div>
     );

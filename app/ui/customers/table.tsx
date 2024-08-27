@@ -6,7 +6,7 @@ import {
   FormattedCustomersTable,
 } from '@/app/lib/definitions';
 
-export default async function CustomersTable({
+export default function CustomersTable({
   customers,
 }: {
   customers: FormattedCustomersTable[];
@@ -40,6 +40,9 @@ export default async function CustomersTable({
                       <p className="text-sm text-gray-500">
                         {customer.email}
                       </p>
+                      <p className="text-sm text-gray-500">
+                        {customer.status_id}
+                      </p>
                     </div>
                   </div>
                   <div className="flex w-full items-center justify-between border-b py-5">
@@ -70,6 +73,9 @@ export default async function CustomersTable({
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
                     Email
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Status
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
                     Total Invoices
@@ -103,6 +109,22 @@ export default async function CustomersTable({
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                       {customer.email}
+                    </td>
+                    <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                      <span
+                        className={`px-4 py-4 rounded-full ${customer.status_id === '1'
+                          ? 'bg-green-100 text-green-800'   
+                          : customer.status_id === '2'
+                            ? 'bg-red-100 text-red-800'       
+                            : 'bg-yellow-100 text-yellow-800'
+                          }`}
+                      >
+                        {customer.status_id === '1'
+                          ? 'Aprovado'
+                          : customer.status_id === '2'
+                            ? 'Reprovado'
+                            : 'Aguardando Aprovação'}
+                      </span>
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                       {customer.total_invoices}

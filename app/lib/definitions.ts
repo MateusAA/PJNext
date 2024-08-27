@@ -87,6 +87,7 @@ export type CustomersTableType = {
   name: string;
   email: string;
   image_url: string;
+  status_id: string;
   total_invoices: number;
   total_pending: number;
   total_paid: number;
@@ -97,9 +98,18 @@ export type FormattedCustomersTable = {
   name: string;
   email: string;
   image_url: string;
+  status_id: string;
   total_invoices: number;
   total_pending: string;
   total_paid: string;
+};
+
+export type FormattedCustomersTableAp = {
+  id: string;
+  name: string;
+  image_url: string;
+  status_id: string;
+  
 };
 
 export type CustomerField = {

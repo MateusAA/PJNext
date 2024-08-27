@@ -1,8 +1,9 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, CheckIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/invoices/action';
 import { deleteGroupUsers } from '@/app/lib/users_group/action'
 import { deleteCustomer } from '@/app/lib/customers/action'
+import { AprovCustomer } from '@/app/lib/aprovacao/action'
 
 export function CreateInvoice() {
   return (
@@ -127,5 +128,49 @@ export function UpdateCustomers({ id }: { id: string }) {
     >
       <PencilIcon className="w-5" />
     </Link>
+  );
+}
+export function UpdateAprov({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/View/dashboard/aprovacao/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-green-100"
+    >
+      <CheckIcon className="w-5" />
+    </Link>
+  );
+}
+
+export function AprovCustomers({ id, status_id }: { id: string, status_id: string }) {
+  const AprovCustomerWithId = AprovCustomer.bind(null, id, status_id);
+  return (
+    <form action={AprovCustomerWithId}>
+      <button className="rounded-md border p-2 bg-green-100 text-green-800 hover:bg-green-300 w-50">
+        Aprovar
+       
+      </button>
+    </form>
+  );
+}
+
+export function ReprovCustomers({ id, status_id }: { id: string, status_id: string }) {
+  const AprovCustomerWithId = AprovCustomer.bind(null, id, status_id);
+  return (
+    <form action={AprovCustomerWithId}>
+      <button className="rounded-md border p-2 bg-red-100 text-red-800 hover:bg-red-300">
+        Reprovar
+      </button>
+    </form>
+  );
+}
+
+export function AgApCustomers({ id, status_id }: { id: string, status_id: string }) {
+  const AprovCustomerWithId = AprovCustomer.bind(null, id, status_id);
+  return (
+    <form action={AprovCustomerWithId}>
+      <button className="rounded-md border p-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-300">
+        <ArrowLeftIcon className="w-5" />
+      </button>
+    </form>
   );
 }

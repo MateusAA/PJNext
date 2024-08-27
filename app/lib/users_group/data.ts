@@ -23,7 +23,7 @@ export async function fetchGroup() {
       FROM user_group
       ORDER BY user_group.description
     `;
-
+        await new Promise((resolve) => setTimeout(resolve, 1100));
         const group = data.rows;
         console.log(group);
         return group;

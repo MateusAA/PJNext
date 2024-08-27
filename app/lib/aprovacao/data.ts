@@ -38,7 +38,7 @@ export async function fetchCustomers() {
     }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredCustomersAprov(query: string) {
     try {
         const data = await sql<CustomersTableType>`
 		SELECT
@@ -46,12 +46,8 @@ export async function fetchFilteredCustomers(query: string) {
 		  customers.name,
 		  customers.email,
 		  customers.image_url,
-		  customers.status_id,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+		  customers.status_id
 		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`}
@@ -59,12 +55,7 @@ export async function fetchFilteredCustomers(query: string) {
 		ORDER BY customers.name ASC
 	  `;
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        const customers = data.rows.map((customer) => ({
-            ...customer,
-            total_pending: formatCurrency(customer.total_pending),
-            total_paid: formatCurrency(customer.total_paid),
-        }));
-
+        const customers = data.rows;
         return customers;
     } catch (err) {
         console.error('Database Error:', err);
