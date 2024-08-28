@@ -96,6 +96,7 @@ export type CustomersTableType = {
 export type FormattedCustomersTable = {
   id: string;
   name: string;
+  razao_social: string;
   email: string;
   image_url: string;
   status_id: string;
@@ -107,6 +108,7 @@ export type FormattedCustomersTable = {
 export type FormattedCustomersTableAp = {
   id: string;
   name: string;
+  razao_social: string;
   image_url: string;
   status_id: string;
   

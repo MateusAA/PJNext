@@ -24,10 +24,10 @@ export default async function Page ({
     return (
         <div className="w-full">
             <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-                Customers
+                Clientes
             </h1>
             <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-            <Search placeholder="Search customers..." />
+            <Search placeholder="Pesquisar clientes..." />
             <CreateCustomers />
             </div>
             {<Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>

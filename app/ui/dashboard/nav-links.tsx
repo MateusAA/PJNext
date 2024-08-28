@@ -23,7 +23,7 @@ const links = {
     title: 'Faturamento',
     items: [
       {
-        name: 'Invoices',
+        name: 'Faturas',
         href: '/View/dashboard/invoices',
         icon: BookmarkIcon,
       },
@@ -33,7 +33,7 @@ const links = {
     title: 'Administração de Usuarios',
     items: [
       {
-        name: 'Users',
+        name: 'Usuarios',
         href: '/View/dashboard/users',
         icon: UserIcon,
       },
@@ -48,7 +48,7 @@ const links = {
     title: 'CRM',
     items: [
       {
-        name: 'Customers',
+        name: 'Clientes',
         href: '/View/dashboard/customers',
         icon: UserGroupIcon,
       },

@@ -77,6 +77,8 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
     // Removendo pontos e traços do CPF e RG, se forem strings
     const sanitizedCPF = cpf ? cpf.replace(/[.-]/g, '') : '';
     const sanitizedRG = rg ? rg.replace(/[.-]/g, '') : '';
+    const sanitizedCNPJ = cnpj ? cnpj.replace(/[./-]/g, '') : '';
+    const sanitizedIE = ie ? ie.replace(/[.-]/g, '') : '';
 
     // Se houver uma imagem, salve-a na pasta 'uploads/images'
     let imagePath = null;
@@ -137,11 +139,12 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
     } else {
         // Validando os campos CNPJ
         validatedFields = CreateCustomerCNPJ.safeParse({
-            cnpj,
+            cnpj: sanitizedCNPJ,
             razao_social,
             nome_fantasia,
-            ie,
+            ie: sanitizedIE,
             image: imagePath,
+            emailtwo
         });
 
         if (!validatedFields.success) {
@@ -155,7 +158,8 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
             razao_social: validatedRazao,
             nome_fantasia: validatedFantasia,
             ie: validatedIE,
-            image: validatedImageEmp
+            image: validatedImageEmp,
+            emailtwo: validatedMail
         } = validatedFields.data);
 
     }
@@ -244,8 +248,8 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
 
                 // Inserindo com CPF
                 const result = await sql`
-            INSERT INTO customers (name, email, cpf, rg, image_url)
-            VALUES (${validatedName}, ${validatedMail}, ${validatedCPF}, ${validatedRG}, ${validatedImage})
+            INSERT INTO customers (name, email, cpf, rg, image_url, status_id)
+            VALUES (${validatedName}, ${validatedMail}, ${validatedCPF}, ${validatedRG}, ${validatedImage}, '3')
             RETURNING id`;
 
                 insertedId = result.rows[0].id;
@@ -277,8 +281,8 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
 
                 // Inserindo com CNPJ
                 const result = await sql`
-            INSERT INTO customers (cnpj, razao_social, nome_fantasia, ie, image_url)
-            VALUES (${validatedCNPJ}, ${validatedRazao}, ${validatedFantasia}, ${validatedIE}, ${validatedImageEmp})
+            INSERT INTO customers (email, cnpj, razao_social, nome_fantasia, ie, image_url, status_id)
+            VALUES (${validatedMail},${validatedCNPJ}, ${validatedRazao}, ${validatedFantasia}, ${validatedIE}, ${validatedImageEmp}, '3')
             RETURNING id`;
 
                 insertedId = result.rows[0].id;

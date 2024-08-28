@@ -192,7 +192,7 @@ export default function Form({ customer, usersVender }: { customer: CustomersFor
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
-                            Document Type
+                            Tipo de documento
                         </label>
                         <div className="relative mt-2 rounded-md">
                             <select
@@ -621,9 +621,9 @@ export default function Form({ customer, usersVender }: { customer: CustomersFor
                     href="/View/dashboard/customers"
                     className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                 >
-                    Cancel
+                    Cancelar
                 </Link>
-                <Button type="submit">Edit Customers</Button>
+                <Button type="submit">Editar Cliente</Button>
             </div>
         </form >
 

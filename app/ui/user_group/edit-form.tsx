@@ -84,7 +84,7 @@ export default function Form({ groups }: { groups: GroupField }) {
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Edit</Button>
+                <Button type="submit">Editar Grupo de usuários</Button>
             </div>
         </form>
     );

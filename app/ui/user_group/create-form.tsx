@@ -74,7 +74,7 @@ export default function Form() {
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Create</Button>
+                <Button type="submit">Criar Grupo de usuários</Button>
             </div>
         </form>
     );

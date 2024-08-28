@@ -32,10 +32,10 @@ const aprov_id = '1';
 const rep_id = '2';
 
     //Inicio do processo de criação do cliente
-    const [documentType, setDocumentType] = useState('cpf');
+    let [documentType, setDocumentType] = useState('cpf');
 
 
-    const [formData, setFormData] = useState({
+    let [formData, setFormData] = useState({
         id: '',
         nameRes: '',
         documentType: 'cpf',
@@ -90,6 +90,10 @@ const rep_id = '2';
         }
     }, [customer]);
 
+    if (customer.cnpj != null){
+        documentType = 'cnpj';
+    }
+
 
     const [errors, setErrors] = useState({});
     const [globalError, setGlobalError] = useState<string | null>(null);
@@ -117,76 +121,13 @@ const rep_id = '2';
         }
     };
 
-    const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setGlobalError(null);
-
-        const formCustomer = new FormData();
-        formCustomer.append('cpf', formData.cpf)
-        formCustomer.append('cnpj', formData.cnpj);
-        formCustomer.append('nome', formData.nome);
-        formCustomer.append('razao_social', formData.razao_social);
-        formCustomer.append('nome_fantasia', formData.nome_fantasia);
-        formCustomer.append('rg', formData.rg);
-        formCustomer.append('ie', formData.ie);
-        if (formData.image) {
-            formCustomer.append('image', formData.image); // Adicione a imagem apenas se existir
-        }
-        const formAndress = new FormData();
-        formAndress.append('cep', formData.cep);
-        formAndress.append('rua', formData.rua);
-        formAndress.append('numero', formData.numero);
-        formAndress.append('bairro', formData.bairro);
-        formAndress.append('cidade', formData.cidade);
-        formAndress.append('uf', formData.uf);
-
-        const formContact = new FormData();
-        formContact.append('responsavel', formData.responsavel);
-        formContact.append('tel_cel', formData.tel_cel);
-        formContact.append('email', formData.email);
-
-        const formInput = new FormData();
-        formInput.append('documentType', formData.documentType);
-
-        const idCustomer = customer.id;
-
-        const response = await UpdateCustomer(
-            formInput,
-            formCustomer,
-            formAndress,
-            formContact,
-            idCustomer
-        );
-
-
-
-        if (response.message) {
-            // Exibe mensagem geral de erro
-            setGlobalError(response.message || 'Erro ao enviar o formulário.');
-        }
-
-        if (response.errors) {
-            setErrors(response.errors);
-        }
-    };
-
-    // Rola a página até o elemento de mensagem de erro quando a mensagem de erro é definida
-    useEffect(() => {
-        if (globalError && errorRef.current) {
-            errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, [globalError]);
-    //Fim do processo de criação de cliente
+    
 
 
     return (
         <div>
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
-                {globalError && (
-                    <div ref={errorRef} className="bg-red-500 text-white p-4 mb-4 rounded">
-                        {globalError}
-                    </div>
-                )}
+              
                 {/* Document Type Selection */}
                 <hr className='border border-black-1000' />
                 <br />
@@ -195,7 +136,7 @@ const rep_id = '2';
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
-                            Document Type
+                            Tipo de documento
                         </label>
                         <div className="relative mt-2 rounded-md">
                             <select
@@ -210,17 +151,14 @@ const rep_id = '2';
                                         documentType: e.target.value,
                                     });
                                 }}
-                                disabled
+                                
                             >
                                 <option value="cpf" >CPF</option>
                                 <option value="cnpj">CNPJ</option>
                             </select>
                             <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-
                     </div>
-
 
                     {/* Conditional Document Input */}
                     <div className="flex-1">
@@ -239,12 +177,9 @@ const rep_id = '2';
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Enter CPF"
                                         disabled
-
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf}</span>}
-
                             </div>
                         ) : (
                             <div>
@@ -264,11 +199,8 @@ const rep_id = '2';
                                     />
                                     <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.cnpj && <span className="text-red-500 text-sm">{errors.cnpj}</span>}
                             </div>
-
                         )}
-
                     </div>
                 </div>
 
@@ -290,13 +222,9 @@ const rep_id = '2';
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Nome"
                                         disabled
-
-
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.nome && <span className="text-red-500 text-sm">{errors.nome}</span>}
-
                             </div>
                         ) : (
                             <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -317,8 +245,6 @@ const rep_id = '2';
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
-                                    {errors.razao_social && <span className="text-red-500 text-sm">{errors.razao_social}</span>}
-
                                 </div>
                                 <div className="flex-1">
                                     <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
@@ -333,13 +259,10 @@ const rep_id = '2';
                                             onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                             placeholder="Nome Fantasia"
-                                                disabled
-
+                                            disabled
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
-                                    {errors.nome_fantasia && <span className="text-red-500 text-sm">{errors.nome_fantasia}</span>}
-
                                 </div>
                             </div>
                         )}
@@ -363,8 +286,6 @@ const rep_id = '2';
                                     />
                                     <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.rg && <span className="text-red-500 text-sm">{errors.rg}</span>}
-
                             </div>
                         ) : (
                             <div>
@@ -381,13 +302,9 @@ const rep_id = '2';
                                         className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                         placeholder="Inscrição Estadual"
                                         disabled
-
                                     />
-
                                     <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.ie && <span className="text-red-500 text-sm">{errors.ie}</span>}
-
                             </div>
                         )}
                     </div>
@@ -439,12 +356,8 @@ const rep_id = '2';
                                 placeholder="CEP - 00000-000"
                                 disabled
                             />
-
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-                        {errors.cep && <span className="text-red-500 text-sm">{errors.cep}</span>}
-
                     </div>
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -460,12 +373,8 @@ const rep_id = '2';
                                 placeholder="Avenida - Rua - Estrada"
                                 disabled
                             />
-
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-                        {errors.rua && <span className="text-red-500 text-sm">{errors.rua}</span>}
-
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -483,12 +392,8 @@ const rep_id = '2';
                                 placeholder="0000"
                                 disabled
                             />
-
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-                        {errors.numero && <span className="text-red-500 text-sm">{errors.numero}</span>}
-
                     </div>
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -504,12 +409,8 @@ const rep_id = '2';
                                 placeholder="Jardim - Vila - Portal"
                                 disabled
                             />
-
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-                        {errors.bairro && <span className="text-red-500 text-sm">{errors.bairro}</span>}
-
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -525,12 +426,8 @@ const rep_id = '2';
                                 placeholder="São Paulo"
                                 disabled
                             />
-
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-
                         </div>
-                        {errors.cidade && <span className="text-red-500 text-sm">{errors.cidade}</span>}
-
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -550,8 +447,6 @@ const rep_id = '2';
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
-                        {errors.uf && <span className="text-red-500 text-sm">{errors.uf}</span>}
-
                     </div>
                 </div>
                 <br />
@@ -583,8 +478,6 @@ const rep_id = '2';
                             <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
-                        {errors.id_responsavel && <span className="text-red-500 text-sm">{errors.id_responsavel}</span>}
-
                     </div>
                     <div className="flex-2">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -605,8 +498,6 @@ const rep_id = '2';
                             <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
-                        {errors.tel_cel && <span className="text-red-500 text-sm">{errors.tel_cel}</span>}
-
                     </div>
                     <div className="flex-1">
                         <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
@@ -627,8 +518,6 @@ const rep_id = '2';
                             <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
-                        {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
-
                     </div>
                 </div>
             </div>

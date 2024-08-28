@@ -11,7 +11,7 @@ export function CreateInvoice() {
       href="invoices/create"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Invoice</span>{' '}
+      <span className="hidden md:block">Criar fatura</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -58,7 +58,7 @@ export function CreateUser() {
       href="users/create"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create User</span>{' '}
+      <span className="hidden md:block">Criar usuario</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -69,7 +69,7 @@ export function CreateUserGroup() {
       href="users_group/create"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create User Group</span>{' '}
+      <span className="hidden md:block">Criar grupo de usuarios</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -103,7 +103,7 @@ export function CreateCustomers() {
       href="customers/create"
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Customers</span>{' '}
+      <span className="hidden md:block">Criar Cliente</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );

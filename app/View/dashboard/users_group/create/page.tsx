@@ -8,9 +8,10 @@ export default async function Page() {
         <main>
             <Breadcrumbs
                 breadcrumbs={[
-                    { label: 'Users', href: 'View/dashboard/users_group' },
                     {
-                        label: 'Create User Group',
+                        label: 'Grupo de usuários', href: 'View/dashboard/users_group' },
+                    {
+                        label: 'Criar Grupo de usuários',
                         href: 'View/dashboard/users_group/create',
                         active: true,
                     },

@@ -47,11 +47,11 @@ export default function CustomersTable({
                   </div>
                   <div className="flex w-full items-center justify-between border-b py-5">
                     <div className="flex w-1/2 flex-col">
-                      <p className="text-xs">Pending</p>
+                      <p className="text-xs">Pendente</p>
                       <p className="font-medium">{customer.total_pending}</p>
                     </div>
                     <div className="flex w-1/2 flex-col">
-                      <p className="text-xs">Paid</p>
+                      <p className="text-xs">Pago</p>
                       <p className="font-medium">{customer.total_paid}</p>
                     </div>
                   </div>
@@ -69,7 +69,7 @@ export default function CustomersTable({
               <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
                 <tr>
                   <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                    Name
+                    Nome
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
                     Email
@@ -78,16 +78,16 @@ export default function CustomersTable({
                     Status
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
-                    Total Invoices
+                    Total de faturas
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
-                    Total Pending
+                    Total pendente
                   </th>
                   <th scope="col" className="px-4 py-5 font-medium">
-                    Total Paid
+                    Total pago
                   </th>
                   <th scope="col" className="px-4 py-5 font-medium">
-                    <span className="sr-only">Edit</span>
+                    <span className="sr-only">Editar</span>
                   </th>
                 </tr>
               </thead>
@@ -104,7 +104,7 @@ export default function CustomersTable({
                           width={28}
                           height={28}
                         />
-                        <p>{customer.name}</p>
+                        <p>{customer.name === null ? customer.razao_social : customer.name} </p>
                       </div>
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">

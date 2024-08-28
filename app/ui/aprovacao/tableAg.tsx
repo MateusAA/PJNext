@@ -76,7 +76,7 @@ export default async function CustomersTableAg({
                             width={28}
                             height={28}
                           />
-                          <p>{customer.name}</p>
+                          <p>{customer.name === null ? customer.razao_social : customer.name}</p>
                         </div>
                       </td>
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">

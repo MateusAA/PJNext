@@ -44,6 +44,7 @@ export async function fetchFilteredCustomers(query: string) {
 		SELECT
 		  customers.id,
 		  customers.name,
+		  customers.razao_social,
 		  customers.email,
 		  customers.image_url,
 		  customers.status_id,

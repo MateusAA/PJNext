@@ -12,9 +12,9 @@ export default async function Page({ params }: { params: { id: string } }) {
         <main>
             <Breadcrumbs
                 breadcrumbs={[
-                    { label: 'Users', href: '/dashboard/users_group' },
+                    { label: 'Grupo de usuários', href: '/dashboard/users_group' },
                     {
-                        label: 'Edit User Group',
+                        label: 'Editar Grupo de usuários',
                         href: `/dashboard/users/${id}/edit`,
                         active: true,
                     },

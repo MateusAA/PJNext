@@ -155,7 +155,7 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Create user</Button>
+                <Button type="submit">Criar usuario</Button>
             </div>
         </form>
     );

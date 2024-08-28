@@ -166,7 +166,7 @@ export default function Form({ user, groups }: { user: UsersForm; groups: GroupF
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Edit user</Button>
+                <Button type="submit">Editar usuario</Button>
             </div>
         </form>
     );

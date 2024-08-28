@@ -25,7 +25,7 @@ export default async function Page({
     return (
         <div className="w-full">
             <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-                Customer Approval
+                Aprovação de Clientes
             </h1>
 
             {<Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
