@@ -5,6 +5,7 @@ import { z } from 'zod'; // Importa a biblioteca zod para validação de esquema
 import { sql } from '@vercel/postgres'; // Importa a função sql da biblioteca @vercel/postgres para consultas ao banco de dados
 import type { User } from '@/app/lib/definitions'; // Importa o tipo User para tipagem estática
 import bcrypt from 'bcrypt'; // Importa a biblioteca bcrypt para hashing e comparação de senhas
+import { createSession } from '@/app/API/session'
 
 // Função assíncrona que busca um usuário pelo email no banco de dados
 async function getUser(email: string): Promise<User | undefined> {
@@ -44,8 +45,10 @@ export const { auth, signIn, signOut } = NextAuth({
                     // Compara a senha fornecida com a senha armazenada no banco de dados
                     const passwordsMatch = await bcrypt.compare(password, user.password);
 
+                    await createSession(user.id, user.name)
                     // Se as senhas coincidem, retorna o usuário
                     if (passwordsMatch) return user;
+
                 }
 
                 // Loga uma mensagem de erro no console e retorna null se as credenciais forem inválidas

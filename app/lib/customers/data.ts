@@ -27,9 +27,10 @@ export async function fetchCustomers() {
         id,
         name
       FROM customers
+      WHERE status_id = '1'
       ORDER BY name ASC
     `;
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const customers = data.rows;
         return customers;
     } catch (err) {
@@ -59,7 +60,7 @@ export async function fetchFilteredCustomers(query: string) {
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `;
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const customers = data.rows.map((customer) => ({
             ...customer,
             total_pending: formatCurrency(customer.total_pending),
