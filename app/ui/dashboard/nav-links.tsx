@@ -13,7 +13,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { userAgentFromString } from 'next/server';
 import { RectangleGroupIcon } from '@heroicons/react/24/outline';
 
 // Map of links organized by category
@@ -66,7 +65,7 @@ const links = {
   },
 };
 
-function NavGroup({ title, links, isOpen, toggleOpen }) {
+function NavGroup({ title, links, isOpen, toggleOpen, pathname }) {
   return (
     <div className="mb-4">
       <button
@@ -87,7 +86,7 @@ function NavGroup({ title, links, isOpen, toggleOpen }) {
                 className={clsx(
                   'flex items-center gap-2 p-2 text-sm font-medium hover:bg-sky-100 hover:text-blue-600',
                   {
-                    'bg-sky-100 text-blue-600': usePathname() === link.href,
+                    'bg-sky-100 text-blue-600': pathname === link.href,
                   }
                 )}
               >
@@ -141,18 +140,21 @@ export default function NavLinks() {
         links={links.faturamento.items}
         isOpen={openGroups.faturamento}
         toggleOpen={() => toggleGroup('faturamento')}
+        pathname={pathname} // Passando o pathname como prop
       />
       <NavGroup
         title={links.gestaoPessoas.title}
         links={links.gestaoPessoas.items}
         isOpen={openGroups.gestaoPessoas}
         toggleOpen={() => toggleGroup('gestaoPessoas')}
+        pathname={pathname} // Passando o pathname como prop
       />
       <NavGroup
         title={links.CRM.title}
         links={links.CRM.items}
         isOpen={openGroups.CRM}
         toggleOpen={() => toggleGroup('CRM')}
+        pathname={pathname} // Passando o pathname como prop
       />
     </aside>
   );
