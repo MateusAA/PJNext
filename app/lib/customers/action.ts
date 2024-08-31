@@ -100,9 +100,9 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
     }
 
     let validatedImage = null;
-    let validatedCPF: string | null = null;
+    let validatedCPF: string = '';
     let validatedRG: string | null = null;
-    let validatedCNPJ = null;
+    let validatedCNPJ: string = '';
     let validatedRazao: string | null = null;
     let validatedFantasia: string | null = null;
     let validatedIE: string | null = null;
