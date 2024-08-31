@@ -10,7 +10,9 @@ const encodedKey = new TextEncoder().encode(secretKey)
 
 interface MyJWTPayload extends JoseJWTPayload {
     name: string;
-    id: string;
+    userId: string;
+    expiresAt: Date;
+
 }
 
 export async function encrypt(payload: MyJWTPayload) {
