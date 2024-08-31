@@ -85,6 +85,7 @@ export type UsersRespon = {
 export type CustomersTableType = {
   id: string;
   name: string;
+  razao_social: string;
   email: string;
   image_url: string;
   status_id: string;
