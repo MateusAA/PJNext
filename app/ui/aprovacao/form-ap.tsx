@@ -85,7 +85,7 @@ const rep_id = '2';
                 cep: customer.cep || '', // Mantém a senha em branco por questões de segurança
                 responsavel: customer.id_responsavel || '', // Mantém a senha em branco por questões de segurança
                 nameRes: customer.nameRes || '', // Mantém a senha em branco por questões de segurança
-
+                image: null, 
             });
         }
     }, [customer]);
