@@ -10,8 +10,8 @@ import {
     InvoicesTable,
     GroupField,
     UsersForm
-} from './definitions';
-import { formatCurrency } from './utils';
+} from '@/app/lib/definitions';
+import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchRevenue() {
