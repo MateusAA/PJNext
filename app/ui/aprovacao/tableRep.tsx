@@ -90,7 +90,7 @@ export default async function CustomersTableRep({
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="2" className="text-center py-4 text-red-800">
+                                        <td colSpan={2} className="text-center py-4 text-red-800">
                                             Nenhum cliente Reprovado
                                         </td>
                                     </tr>
