@@ -2,21 +2,31 @@ import 'server-only'
     
 import { cookies } from 'next/headers';
 import { decrypt } from '@/app/API/session';
+import { redirect } from 'next/navigation';
 import { cache } from '@/app/lib/cacheModule';
 import { PrismaClient } from '@prisma/client';
 
 const db = new PrismaClient();
 
 export const verifySession = cache(async () => {
-    const cookie = cookies().get('session').value
-    const session = await decrypt(cookie)
+    const cookie = cookies().get('session')
+    // Verifica se o cookie existe antes de acessar seu valor
+    if (!cookie) {
+        redirect('/login');
+        return { isAuth: false };
+    }
 
-    if (!session.userId) {
-        redirect('/login')
+    const session = await decrypt(cookie.value);
+
+    // Verifica se o objeto session tem userId
+    if (!session || !session.userId) {
+        redirect('/login');
+        return { isAuth: false };
     }
 
     return { isAuth: true, userId: session.userId, name: session.name }
 })
+
 
 
 
