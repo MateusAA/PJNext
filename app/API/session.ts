@@ -4,18 +4,16 @@ import 'server-only'
 
 import { cookies } from 'next/headers';
 import { cache } from '@/app/lib/cacheModule';
-import { SignJWT, jwtVerify } from 'jose'
-
+import { SignJWT, jwtVerify, JWTPayload as JoseJWTPayload } from 'jose'
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
 
-
-interface JWTPayload {
+interface MyJWTPayload extends JoseJWTPayload {
     name: string;
     id: string;
 }
 
-export async function encrypt(payload: JWTPayload) {
+export async function encrypt(payload: MyJWTPayload) {
     return new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
