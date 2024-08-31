@@ -89,7 +89,7 @@ export default async function CustomersTableAg({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2" className="text-center py-4 text-red-800">
+                    <td colSpan='2' className="text-center py-4 text-red-800">
                       Nenhum cliente Aguardando Aprovação
                     </td>
                   </tr>

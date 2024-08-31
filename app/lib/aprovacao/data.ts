@@ -12,7 +12,8 @@ import {
     UsersForm,
     CustomerFilterCPF,
     CustomerFilterCNPJ,
-    CustomersForm
+    CustomersForm,
+    FormattedCustomersTableAp
 } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -40,12 +41,11 @@ export async function fetchCustomers() {
 
 export async function fetchFilteredCustomersAprov(query: string) {
     try {
-        const data = await sql<CustomersTableType>`
+        const data = await sql<FormattedCustomersTableAp>`
 		SELECT
 		  customers.id,
 		  customers.name,
 		  customers.razao_social,
-		  customers.email,
 		  customers.image_url,
 		  customers.status_id
 		FROM customers
