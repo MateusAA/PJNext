@@ -25,21 +25,21 @@ const UpdateUsers = z.object({
     id_grupo: z.string().nonempty({ message: 'Informe um grupo.' }),
     password: z.string(),
 });
-export type formData = {
+export type State = {
     errors?: {
         name?: string[];
         email?: string[];
         password?: string[];
-        grupo?: string[];
+        id_grupo?: string[];
     };
     message?: string | null;
 };
 
-export async function createUser(formData: FormData) {
+export async function createUser(prevState: State, formData: FormData) {
     // Extraindo os dados do FormData
     const name = formData.get('name');
     const email = formData.get('email');
-    const id_grupo = formData.get('grupo');
+    const id_grupo = formData.get('id_grupo');
     const password = formData.get('password');
 
     // Log dos dados recebidos para depuração

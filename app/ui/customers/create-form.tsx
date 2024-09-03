@@ -1,294 +1,297 @@
-'use client';
+    'use client';
 
-import { CustomerField, UsersForm, UsersRespon } from '@/app/lib/definitions';
-import Link from 'next/link';
-import React, { useState, useRef, useEffect } from 'react';
-import InputMask from 'react-input-mask';
-import {
-    CheckIcon,
-    ClockIcon,
-    CurrencyDollarIcon,
-    UserCircleIcon,
-    PowerIcon,
-    BanknotesIcon,
-    CogIcon,
-    CubeIcon,
-    MapIcon,
-    PhoneIcon,
-    IdentificationIcon
-} from '@heroicons/react/24/outline';
-import { Button } from '@/app/ui/button';
-import { CreateCustomer } from '@/app/lib/customers/action';
-import { useRouter } from 'next/navigation';
-import { useFormState } from 'react-dom';
+    import { CustomerField, UsersForm, UsersRespon } from '@/app/lib/definitions';
+    import Link from 'next/link';
+    import React, { useState, useRef, useEffect } from 'react';
+    import InputMask from 'react-input-mask';
+    import {
+        CheckIcon,
+        ClockIcon,
+        CurrencyDollarIcon,
+        UserCircleIcon,
+        PowerIcon,
+        BanknotesIcon,
+        CogIcon,
+        CubeIcon,
+        MapIcon,
+        PhoneIcon,
+        IdentificationIcon
+    } from '@heroicons/react/24/outline';
+    import { Button } from '@/app/ui/button';
+    import { CreateCustomer } from '@/app/lib/customers/action';
+    import { useRouter } from 'next/navigation';
+    import { useFormState } from 'react-dom';
 
-export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
+    export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
+
+        
 
 
-    const [documentType, setDocumentType] = useState('cpf');
+        const [documentType, setDocumentType] = useState('cpf');
 
 
-    const [formData, setFormData] = useState({
-        documentType: 'cpf',
-        cpf: '',
-        cnpj: '',
-        nome: '',
-        razao_social: '',
-        nome_fantasia: '',
-        rg: '',
-        ie: '',
-        image: null as File | null,
-        cep: '',
-        rua: '',
-        numero: '',
-        bairro: '',
-        cidade: '',
-        uf: '',
-        responsavel: '',
-        tel_cel: '',
-        email: ''
+        const [formData, setFormData] = useState({
+            documentType: 'cpf',
+            cpf: '',
+            cnpj: '',
+            nome: '',
+            razao_social: '',
+            nome_fantasia: '',
+            rg: '',
+            ie: '',
+            image: null as File | null,
+            cep: '',
+            rua: '',
+            numero: '',
+            bairro: '',
+            cidade: '',
+            uf: '',
+            responsavel: '',
+            tel_cel: '',
+            email: ''
 
-    });
-    const [errors, setErrors] = useState({});
-    const [globalError, setGlobalError] = useState<string | null>(null);
-    const errorRef = useRef<HTMLDivElement | null>(null);
-    
-    const router = useRouter();
+        });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const [errors, setErrors] = useState({});
+        const [globalError, setGlobalError] = useState<string | null>(null);
+        const errorRef = useRef<HTMLDivElement | null>(null);
+        
+        const router = useRouter();
 
-        if (e.target instanceof HTMLInputElement && e.target.type === 'file') {
-            const files = e.target.files;
-            if (files && files.length > 0) {
-                // Se for um campo de arquivo, use files[0]
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+            const { name, value } = e.target;
+
+            if (e.target instanceof HTMLInputElement && e.target.type === 'file') {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    // Se for um campo de arquivo, use files[0]
+                    setFormData({
+                        ...formData,
+                        [name]: files[0]
+                    });
+                }
+            } else {
                 setFormData({
                     ...formData,
-                    [name]: files[0]
+                    [name]: value
                 });
             }
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value
-            });
-        }
-    };
+        };
 
-    const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setGlobalError(null);
+        const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            setGlobalError(null);
 
-        const formCustomer = new FormData();
-        formCustomer.append('cpf', formData.cpf)
-        formCustomer.append('cnpj', formData.cnpj);
-        formCustomer.append('nome', formData.nome);
-        formCustomer.append('razao_social', formData.razao_social);
-        formCustomer.append('nome_fantasia', formData.nome_fantasia);
-        formCustomer.append('rg', formData.rg);
-        formCustomer.append('ie', formData.ie);
-        if (formData.image) {
-            formCustomer.append('image', formData.image); // Adicione a imagem apenas se existir
-        }
-        const formAndress = new FormData();
-        formAndress.append('cep', formData.cep);
-        formAndress.append('rua', formData.rua);
-        formAndress.append('numero', formData.numero);
-        formAndress.append('bairro', formData.bairro);
-        formAndress.append('cidade', formData.cidade);
-        formAndress.append('uf', formData.uf);
+            const formCustomer = new FormData();
+            formCustomer.append('cpf', formData.cpf)
+            formCustomer.append('cnpj', formData.cnpj);
+            formCustomer.append('nome', formData.nome);
+            formCustomer.append('razao_social', formData.razao_social);
+            formCustomer.append('nome_fantasia', formData.nome_fantasia);
+            formCustomer.append('rg', formData.rg);
+            formCustomer.append('ie', formData.ie);
+            if (formData.image) {
+                formCustomer.append('image', formData.image); // Adicione a imagem apenas se existir
+            }
+            const formAndress = new FormData();
+            formAndress.append('cep', formData.cep);
+            formAndress.append('rua', formData.rua);
+            formAndress.append('numero', formData.numero);
+            formAndress.append('bairro', formData.bairro);
+            formAndress.append('cidade', formData.cidade);
+            formAndress.append('uf', formData.uf);
 
-        const formContact = new FormData();
-        formContact.append('responsavel', formData.responsavel);
-        formContact.append('tel_cel', formData.tel_cel);
-        formContact.append('email', formData.email);
+            const formContact = new FormData();
+            formContact.append('responsavel', formData.responsavel);
+            formContact.append('tel_cel', formData.tel_cel);
+            formContact.append('email', formData.email);
 
-        const formInput = new FormData();
-        formInput.append('documentType', formData.documentType);
+            const formInput = new FormData();
+            formInput.append('documentType', formData.documentType);
 
-        const response = await CreateCustomer(
-            formInput,
-            formCustomer,
-            formAndress,
-            formContact
-        );
+            const response = await CreateCustomer(
+                formInput,
+                formCustomer,
+                formAndress,
+                formContact
+            );
 
 
 
-        if (response.message) {
-            // Exibe mensagem geral de erro
-            setGlobalError(response.message || 'Erro ao enviar o formulário.');
-        }
+            if (response.message) {
+                // Exibe mensagem geral de erro
+                setGlobalError(response.message || 'Erro ao enviar o formulário.');
+            }
 
-        if (response.errors) {
-            setErrors(response.errors);
-        }
-    };
+            if (response.errors) {
+                setErrors(response.errors);
+            }
+        };
 
-    // Rola a página até o elemento de mensagem de erro quando a mensagem de erro é definida
-    useEffect(() => {
-        if (globalError && errorRef.current) {
-            errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }, [globalError]);
+        // Rola a página até o elemento de mensagem de erro quando a mensagem de erro é definida
+        useEffect(() => {
+            if (globalError && errorRef.current) {
+                errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, [globalError]);
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div className="rounded-md bg-gray-50 p-4 md:p-6">
-                {globalError  && (
-                    <div  ref={errorRef} className="bg-red-500 text-white p-4 mb-4 rounded">
-                        {globalError}
-                    </div>
-                )}
-                {/* Document Type Selection */}
-                <hr className='border border-black-1000' />
-                <br />
-                <p className='text-xl text-center'>Dados do cliente</p>
-                <br />
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    <div className="flex-1">
-                        <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
-                            Tipo de documento
-                        </label>
-                        <div className="relative mt-2 rounded-md">
-                            <select
-                                id="documentType"
-                                name="documentType"
-                                className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                value={documentType}
-                                onChange={(e) => {
-                                    setDocumentType(e.target.value);
-                                    setFormData({
-                                        ...formData,
-                                        documentType: e.target.value,
-                                    });
-                                }}
-                            >
-                                <option value="cpf" >CPF</option>
-                                <option value="cnpj">CNPJ</option>
-                            </select>
-                            <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+        return (
+            <form onSubmit={handleSubmit}>
+                <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    {globalError  && (
+                        <div  ref={errorRef} className="bg-red-500 text-white p-4 mb-4 rounded">
+                            {globalError}
+                        </div>
+                    )}
+                    {/* Document Type Selection */}
+                    <hr className='border border-black-1000' />
+                    <br />
+                    <p className='text-xl text-center'>Dados do cliente</p>
+                    <br />
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
+                        <div className="flex-1">
+                            <label htmlFor="documentType" className="mb-2 block text-sm font-medium">
+                                Tipo de documento
+                            </label>
+                            <div className="relative mt-2 rounded-md">
+                                <select
+                                    id="documentType"
+                                    name="documentType"
+                                    className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                    value={documentType}
+                                    onChange={(e) => {
+                                        setDocumentType(e.target.value);
+                                        setFormData({
+                                            ...formData,
+                                            documentType: e.target.value,
+                                        });
+                                    }}
+                                >
+                                    <option value="cpf" >CPF</option>
+                                    <option value="cnpj">CNPJ</option>
+                                </select>
+                                <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+
+                            </div>
 
                         </div>
 
-                    </div>
 
+                        {/* Conditional Document Input */}
+                        <div className="flex-1">
+                            {documentType === 'cpf' ? (
+                                <div>
+                                    <label htmlFor="cpf" className="mb-2 block text-sm font-medium">
+                                        CPF
+                                    </label>
+                                    <div className="relative">
+                                        <InputMask
+                                            mask="999.999.999-99"
+                                            id="cpf"
+                                            name="cpf"
+                                            value={formData.cpf}
+                                            onChange={handleChange}
+                                            className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                            placeholder="Enter CPF"
 
-                    {/* Conditional Document Input */}
-                    <div className="flex-1">
-                        {documentType === 'cpf' ? (
-                            <div>
-                                <label htmlFor="cpf" className="mb-2 block text-sm font-medium">
-                                    CPF
-                                </label>
-                                <div className="relative">
-                                    <InputMask
-                                        mask="999.999.999-99"
-                                        id="cpf"
-                                        name="cpf"
-                                        value={formData.cpf}
-                                        onChange={handleChange}
-                                        className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                        placeholder="Enter CPF"
+                                        />
+                                        <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                    </div>
+                                    {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf}</span>}
 
-                                    />
-                                    <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                 </div>
-                                {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf}</span>}
-
-                            </div>
-                        ) : (
-                            <div>
-                                <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
-                                    CNPJ
-                                </label>
-                                <div className="relative">
-                                    <InputMask
-                                        mask="99.999.999/9999-99"
-                                        id="cnpj"
-                                        name="cnpj"
-                                        value={formData.cnpj}
-                                        onChange={handleChange}
-                                        className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                        placeholder="Enter CNPJ"
-                                    />
-                                    <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                                </div>
-                                {errors.cnpj && <span className="text-red-500 text-sm">{errors.cnpj}</span>}
-                            </div>
-
-                        )}
-
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    {/* Conditional Document Input */}
-                    <div className="flex-1">
-                        {documentType === 'cpf' ? (
-                            <div>
-                                <label htmlFor="cpf" className="mb-2 block text-sm font-medium">
-                                    Nome
-                                </label>
-                                <div className="relative">
-                                    <InputMask
-                                        mask=""
-                                        id="nome"
-                                        name="nome"
-                                        value={formData.nome}
-                                        onChange={handleChange}
-                                        className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                        placeholder="Nome"
-
-                                    />
-                                    <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                                </div>
-                                {errors.nome && <span className="text-red-500 text-sm">{errors.nome}</span>}
-
-                            </div>
-                        ) : (
-                            <div className="flex flex-col md:flex-row gap-4 mb-4">
-                                <div className="flex-1">
+                            ) : (
+                                <div>
                                     <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
-                                        Razão Social
+                                        CNPJ
+                                    </label>
+                                    <div className="relative">
+                                        <InputMask
+                                            mask="99.999.999/9999-99"
+                                            id="cnpj"
+                                            name="cnpj"
+                                            value={formData.cnpj}
+                                            onChange={handleChange}
+                                            className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                            placeholder="Enter CNPJ"
+                                        />
+                                        <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                    </div>
+                                    {errors.cnpj && <span className="text-red-500 text-sm">{errors.cnpj}</span>}
+                                </div>
+
+                            )}
+
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
+                        {/* Conditional Document Input */}
+                        <div className="flex-1">
+                            {documentType === 'cpf' ? (
+                                <div>
+                                    <label htmlFor="cpf" className="mb-2 block text-sm font-medium">
+                                        Nome
                                     </label>
                                     <div className="relative">
                                         <InputMask
                                             mask=""
-                                            id="razao_social"
-                                            name="razao_social"
-                                            value={formData.razao_social}
+                                            id="nome"
+                                            name="nome"
+                                            value={formData.nome}
                                             onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                            placeholder="Razão Social"
+                                            placeholder="Nome"
+
                                         />
-                                        <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                        <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
-                                    {errors.razao_social && <span className="text-red-500 text-sm">{errors.razao_social}</span>}
+                                    {errors.nome && <span className="text-red-500 text-sm">{errors.nome}</span>}
 
                                 </div>
-                                <div className="flex-1">
-                                    <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
-                                        Nome Fantasia
-                                    </label>
-                                    <div className="relative">
-                                        <InputMask
-                                            mask=""
-                                            id="nome_fantasia"
-                                            name="nome_fantasia"
-                                            value={formData.nome_fantasia}
-                                            onChange={handleChange}
-                                            className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                            placeholder="Nome Fantasia"
-                                        />
-                                        <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                                    </div>
-                                    {errors.nome_fantasia && <span className="text-red-500 text-sm">{errors.nome_fantasia}</span>}
+                            ) : (
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
+                                    <div className="flex-1">
+                                        <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
+                                            Razão Social
+                                        </label>
+                                        <div className="relative">
+                                            <InputMask
+                                                mask=""
+                                                id="razao_social"
+                                                name="razao_social"
+                                                value={formData.razao_social}
+                                                onChange={handleChange}
+                                                className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                                placeholder="Razão Social"
+                                            />
+                                            <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                        </div>
+                                        {errors.razao_social && <span className="text-red-500 text-sm">{errors.razao_social}</span>}
 
+                                    </div>
+                                    <div className="flex-1">
+                                        <label htmlFor="cnpj" className="mb-2 block text-sm font-medium">
+                                            Nome Fantasia
+                                        </label>
+                                        <div className="relative">
+                                            <InputMask
+                                                mask=""
+                                                id="nome_fantasia"
+                                                name="nome_fantasia"
+                                                value={formData.nome_fantasia}
+                                                onChange={handleChange}
+                                                className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                                placeholder="Nome Fantasia"
+                                            />
+                                            <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                                        </div>
+                                        {errors.nome_fantasia && <span className="text-red-500 text-sm">{errors.nome_fantasia}</span>}
+
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
                     <div className="flex-1">
                         {documentType === 'cpf' ? (
                             <div>
