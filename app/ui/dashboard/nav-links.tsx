@@ -6,7 +6,7 @@ import {
   DocumentDuplicateIcon,
   PhoneArrowDownLeftIcon,
   BookmarkIcon,
-  CheckIcon
+  CheckIcon,
 } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
@@ -15,8 +15,25 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { RectangleGroupIcon } from '@heroicons/react/24/outline';
 
+// Definindo tipos para os links e grupos
+type LinkItem = {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+};
+
+type LinkGroup = {
+  title: string;
+  items: LinkItem[];
+};
+
 // Map of links organized by category
-const links = {
+const links: {
+  home: LinkItem;
+  faturamento: LinkGroup;
+  gestaoPessoas: LinkGroup;
+  CRM: LinkGroup;
+} = {
   home: { name: 'Home', href: '/View/dashboard', icon: HomeIcon },
   faturamento: {
     title: 'Faturamento',
@@ -65,7 +82,19 @@ const links = {
   },
 };
 
-function NavGroup({ title, links, isOpen, toggleOpen, pathname }) {
+function NavGroup({
+  title,
+  links,
+  isOpen,
+  toggleOpen,
+  pathname,
+}: {
+  title: string;
+  links: LinkItem[];
+  isOpen: boolean;
+  toggleOpen: () => void;
+  pathname: string;
+}) {
   return (
     <div className="mb-4">
       <button
@@ -109,7 +138,7 @@ export default function NavLinks() {
     CRM: false,
   });
 
-  const toggleGroup = (group) => {
+  const toggleGroup = (group: keyof typeof openGroups) => {
     setOpenGroups((prevState) => ({
       ...prevState,
       [group]: !prevState[group],
@@ -140,21 +169,21 @@ export default function NavLinks() {
         links={links.faturamento.items}
         isOpen={openGroups.faturamento}
         toggleOpen={() => toggleGroup('faturamento')}
-        pathname={pathname} // Passando o pathname como prop
+        pathname={pathname}
       />
       <NavGroup
         title={links.gestaoPessoas.title}
         links={links.gestaoPessoas.items}
         isOpen={openGroups.gestaoPessoas}
         toggleOpen={() => toggleGroup('gestaoPessoas')}
-        pathname={pathname} // Passando o pathname como prop
+        pathname={pathname}
       />
       <NavGroup
         title={links.CRM.title}
         links={links.CRM.items}
         isOpen={openGroups.CRM}
         toggleOpen={() => toggleGroup('CRM')}
-        pathname={pathname} // Passando o pathname como prop
+        pathname={pathname}
       />
     </aside>
   );
