@@ -39,7 +39,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                     {error}
                                 </p>
                             ))}
-                    </div>                </div>
+                    </div>
+                </div>
 
                 {/* Email */}
                 <div className="mb-4">
@@ -66,7 +67,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                     {error}
                                 </p>
                             ))}
-                    </div>                </div>
+                    </div>
+                </div>
 
                 <div className="mb-4">
                     <label htmlFor="grupo" className="mb-2 block text-sm font-medium">
@@ -80,11 +82,11 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                             defaultValue=""
                             aria-describedby="customer-error"
                         >
-                            <option  value="" >
+                            <option value="" >
                                 Selecione o Grupo
                             </option>
                             {groups.map((group) => (
-                                <option  key={group.id_group} value={group.id_group}>
+                                <option key={group.id_group} value={group.id_group}>
                                     {group.description}
                                 </option>
                             ))}
@@ -126,7 +128,8 @@ export default function Form({ groups }: { groups: GroupField[] }) {
                                     {error}
                                 </p>
                             ))}
-                    </div>                </fieldset>
+                    </div>
+                </fieldset>
 
             </div>
             <div className="mt-6 flex justify-end gap-4">

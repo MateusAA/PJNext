@@ -158,5 +158,6 @@ export type CustomersForm = {
   cep: string;
   id_responsavel: string;
   nameRes : string;
+  image : string;
 };
 

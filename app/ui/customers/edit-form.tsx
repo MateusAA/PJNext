@@ -22,6 +22,17 @@ import { UpdateCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 
+type FormErrors = {
+    cpf?: string[];
+    cnpj?: string[];
+    nome?: string[];
+    razao_social?: string[];
+    rg?: string[];
+    ie?: string[];
+    image?: string[];
+    [key: string]: string[] | undefined;
+};
+
 export default function Form({ customer, usersVender }: { customer: CustomersForm, usersVender: UsersRespon[] }) {
 
     console.log(customer);
@@ -82,13 +93,14 @@ export default function Form({ customer, usersVender }: { customer: CustomersFor
                 cep: customer.cep || '', // Mantém a senha em branco por questões de segurança
                 responsavel: customer.id_responsavel || '', // Mantém a senha em branco por questões de segurança
                 nameRes: customer.nameRes || '', // Mantém a senha em branco por questões de segurança
+                image: null,
 
             });
         }
     }, [customer]);
 
 
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<FormErrors>({});
     const [globalError, setGlobalError] = useState<string | null>(null);
     const errorRef = useRef<HTMLDivElement | null>(null);
 
@@ -163,7 +175,16 @@ export default function Form({ customer, usersVender }: { customer: CustomersFor
         }
 
         if (response.errors) {
-            setErrors(response.errors);
+            const mappedErrors: FormErrors = {};
+            const errors = response.errors as { [key: string]: string[] };
+
+            Object.keys(errors).forEach((key) => {
+                const errorMessages = errors[key];
+                // Mantenha `errorMessages` como um array de strings
+                mappedErrors[key] = Array.isArray(errorMessages) ? errorMessages : [errorMessages];
+            });
+
+            setErrors(mappedErrors);
         }
     };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useFormState } from 'react-dom';
 import Link from 'next/link';
 import { UserCircleIcon, ComputerDesktopIcon, HashtagIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
@@ -11,69 +12,38 @@ import { RectangleGroupIcon } from '@heroicons/react/24/solid';
 
 export default function Form({ groups }: { groups: GroupField }) {
 
-    const [formData, setFormData] = useState({
-        id_group:'',
-        description: '',
-    });
-    const [errors, setErrors] = useState({});
-    const router = useRouter();
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    useEffect(() => {
-        if (groups) {
-            setFormData({
-                description: groups.description || '',
-                id_group: groups.id_group || '',
-               
-            });
-        }
-    }, [groups]);
-
-
-    const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = new FormData();
-        form.append('id_group', formData.id_group);
-        form.append('description', formData.description);
-
-
-        const response = await updateUserGroup(form);
-
-       
-    };
+    const initialState = { message: null, errors: {} };
+    const [state, dispatch] = useFormState(updateUserGroup, initialState);
 
     return (
-
-        <form onSubmit={handleSubmit}>
+        <form action={dispatch}>
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
                 {/* Nome do Cliente */}
                 <div className="mb-4">
                     <label htmlFor="name" className="mb-2 block text-sm font-medium">
                         Informe a descrição do grupo
                     </label>
+                        <input type="hidden" id="id_group" name="id_group" value={groups.id_group} />
                     <div className="relative">
-                        <input type="hidden" id="id_group" name="id_group" value={formData.id_group} />
                         <input
                             id="description"
                             name="description"
                             type="text"
+                            defaultValue={groups.description}
                             placeholder="Informe a descrição"
-                            value={formData.description}
-                            onChange={handleChange}
                             className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="customer-error"
                         />
                         <RectangleGroupIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                     </div>
-                    {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
-                </div>
+                    <div id="customer-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.description &&
+                            state.errors.description.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>                </div>
 
 
             </div>
@@ -84,8 +54,9 @@ export default function Form({ groups }: { groups: GroupField }) {
                 >
                     Cancelar
                 </Link>
-                <Button type="submit">Editar Grupo de usuários</Button>
+                <Button type="submit">Criar Grupo de usuários</Button>
             </div>
         </form>
     );
 }
+

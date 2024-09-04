@@ -83,7 +83,7 @@ export async function createUser(prevState: State, formData: FormData) {
     redirect('/View/dashboard/users');
 }
 
-export async function updateUser(formData: FormData) {
+export async function updateUser(prevError: State, formData: FormData) {
     // Extraindo os dados do FormData
     const id = formData.get('id');
     const name = formData.get('name');

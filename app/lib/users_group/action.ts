@@ -30,7 +30,7 @@ const UpdateUsersGroups = z.object({
 
 });
 
-export async function createUserGroups(formDataGroup: FormData) {
+export async function createUserGroups(prevError: formDataGroup, formDataGroup: FormData) {
     // Extraindo os dados do FormData
     const description = formDataGroup.get('description')
 
@@ -70,7 +70,7 @@ export async function createUserGroups(formDataGroup: FormData) {
     redirect('/View/dashboard/users_group');
 }
 
-export async function updateUserGroup(formData: FormData) {
+export async function updateUserGroup(prevError: formDataGroup, formData: FormData) {
     // Extraindo os dados do FormData
     const id_group = formData.get('id_group');
     const description = formData.get('description');

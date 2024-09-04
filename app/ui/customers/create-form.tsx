@@ -22,13 +22,22 @@
     import { useRouter } from 'next/navigation';
     import { useFormState } from 'react-dom';
 
-    export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
 
-        
+type FormErrors = {
+    cpf?: string[];
+    cnpj?: string[];
+    nome?: string[];
+    razao_social?: string[];
+    rg?: string[];
+    ie?: string[];
+    image?: string[];
+    [key: string]: string[] | undefined;
+};
+
+export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
 
 
         const [documentType, setDocumentType] = useState('cpf');
-
 
         const [formData, setFormData] = useState({
             documentType: 'cpf',
@@ -52,7 +61,7 @@
 
         });
 
-        const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<FormErrors>({});
         const [globalError, setGlobalError] = useState<string | null>(null);
         const errorRef = useRef<HTMLDivElement | null>(null);
         
@@ -124,8 +133,19 @@
             }
 
             if (response.errors) {
-                setErrors(response.errors);
+                const mappedErrors: FormErrors = {};
+                const errors = response.errors as { [key: string]: string[] };
+
+                Object.keys(errors).forEach((key) => {
+                    const errorMessages = errors[key];
+                    // Mantenha `errorMessages` como um array de strings
+                    mappedErrors[key] = Array.isArray(errorMessages) ? errorMessages : [errorMessages];
+                });
+
+                setErrors(mappedErrors);
             }
+
+
         };
 
         // Rola a página até o elemento de mensagem de erro quando a mensagem de erro é definida
@@ -198,7 +218,6 @@
                                         <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
                                     {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf}</span>}
-
                                 </div>
                             ) : (
                                 <div>
