@@ -45,7 +45,8 @@ export const { auth, signIn, signOut } = NextAuth({
                     // Compara a senha fornecida com a senha armazenada no banco de dados
                     const passwordsMatch = await bcrypt.compare(password, user.password);
 
-                    await createSession(user.id, user.name)
+
+                    await createSession(user.id, user.name, user.id_grupo)
                     // Se as senhas coincidem, retorna o usuário
                     if (passwordsMatch) return user;
 

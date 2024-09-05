@@ -24,7 +24,7 @@ export const verifySession = cache(async () => {
         return { isAuth: false };
     }
 
-    return { isAuth: true, userId: session.userId, name: session.name }
+    return { isAuth: true, userId: session.userId, name: session.name, id_grupo: session.id_grupo }
 })
 
 
@@ -38,7 +38,8 @@ export const getUser = cache(async () => {
         
         const user = {
             id: session.userId,
-            name: session.name
+            name: session.name,
+            id_grupo: session.id_grupo
         }
 
         return user;

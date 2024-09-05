@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
+
 import 'server-only'
 
 import { cookies } from 'next/headers';
@@ -36,9 +37,9 @@ export async function decrypt(session: string | undefined = '') {
     }
 }
 
-export async function createSession(userId: string, name: string) {
+export async function createSession(userId: string, name: string, id_grupo: string) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    const session = await encrypt({ userId, name , expiresAt })
+    const session = await encrypt({ userId, name, id_grupo, expiresAt })
 
     cookies().set('session', session, {
         httpOnly: true,

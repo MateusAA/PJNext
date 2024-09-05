@@ -161,3 +161,16 @@ export type CustomersForm = {
   image : string;
 };
 
+export type FormattedContactCustomersTable = {
+  id: string;
+  name: string;
+  nome_fantasia: string;
+  email: string;
+  image_url: string;
+  tel_cel: string;
+  id_responsavel: string;
+  message: string;
+  created_at: string;
+  
+};
+

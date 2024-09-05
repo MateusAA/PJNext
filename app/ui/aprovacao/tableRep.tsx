@@ -5,13 +5,15 @@ import {
     FormattedCustomersTableAp,
     FormattedCustomersTable,
 } from '@/app/lib/definitions';
+import { getUser } from '@/app/lib/DAL'; 
+
 
 export default async function CustomersTableRep({
     customers,
 }: {
         customers: FormattedCustomersTableAp[];
 }) {
-
+    const user = await getUser();
     const agAp = '3';
 
     return (
@@ -45,7 +47,9 @@ export default async function CustomersTableRep({
                                     </div>
 
                                     <div className="flex justify-end gap-2">
+                                        {(user.id_grupo === 1 || user.id_grupo === 2) && (
                                         <AgApCustomers id={customer.id}status_id={agAp} />
+                                        )}
                                        
                                     </div>
                                 </div>
@@ -83,7 +87,9 @@ export default async function CustomersTableRep({
                                             </td>
                                             <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                                 <div className="flex justify-end gap-3">
+                                                    {(user.id_grupo === 1 || user.id_grupo === 2) && (
                                                     <AgApCustomers id={customer.id} status_id={agAp} />
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

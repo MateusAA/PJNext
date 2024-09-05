@@ -5,12 +5,16 @@ import {
   FormattedCustomersTableAp,
   FormattedCustomersTable,
 } from '@/app/lib/definitions';
+import { getUser } from '@/app/lib/DAL'; 
+
 
 export default async function CustomersTableAg({
   customers,
 }: {
     customers: FormattedCustomersTableAp[];
 }) {
+  const user = await getUser();
+  
   return (
 
     <div className="mt-2 flow">
@@ -43,8 +47,9 @@ export default async function CustomersTableAg({
                   </div>
                   
                   <div className="flex justify-end gap-2">
-                    <UpdateAprov id={customer.id} />
-                   
+                    {(user.id_grupo === 1 || user.id_grupo === 2) && (
+                      <UpdateAprov id={customer.id} />
+                    )}
                   </div>
                 </div>
               ))}
@@ -79,10 +84,12 @@ export default async function CustomersTableAg({
                           <p>{customer.name === null ? customer.razao_social : customer.name}</p>
                         </div>
                       </td>
+                      
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">
-                          <UpdateAprov id={customer.id} />
-                          
+                          {(user.id_grupo === 1 || user.id_grupo === 2) && (
+                            <UpdateAprov id={customer.id} />
+                          )}
                         </div>
                       </td>
                     </tr>
