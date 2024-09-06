@@ -2,7 +2,7 @@ import { lusitana } from '@/app/ui/font';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { fetchCustomersContact } from '@/app/lib/contato/data';
+import { fetchCustomersContact, fetchTreatmentType, fetchReturnType } from '@/app/lib/contato/data';
 import  Table  from '@/app/ui/contato/table';
 
 
@@ -18,6 +18,8 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
 
   const contact = await fetchCustomersContact();
+  const typeTreatment = await fetchTreatmentType();
+  const typeReturn = await fetchReturnType();
 
   return (
     <div className="w-full">
@@ -25,7 +27,7 @@ export default async function Page({
         Contatos
       </h1>
       {<Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table contact={contact} />
+        <Table contact={contact} typeTreatment={typeTreatment} typeReturn={typeReturn}/>
       </Suspense>}
     </div>
   );

@@ -13,7 +13,9 @@ import {
     CustomerFilterCPF,
     CustomerFilterCNPJ,
     CustomersForm,
-    FormattedContactCustomersTable
+    FormattedContactCustomersTable,
+    FormattedTypeTreatment,
+    FormattedtypeReturn
 } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -45,6 +47,42 @@ export async function fetchCustomersContact() {
         await new Promise((resolve) => setTimeout(resolve, 100));
         const contactCustomers = data.rows;
         return contactCustomers;
+    } catch (err) {
+        console.error('Database Error:', err);
+        throw new Error('Failed to fetch all customers.');
+    }
+}
+
+export async function fetchTreatmentType() {
+    
+    try {
+        const data = await sql<FormattedTypeTreatment>`
+        SELECT
+         *
+        FROM
+           tb_treatment_type
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const typeTreatment = data.rows;
+        return typeTreatment;
+    } catch (err) {
+        console.error('Database Error:', err);
+        throw new Error('Failed to fetch all customers.');
+    }
+}
+
+export async function fetchReturnType() {
+    
+    try {
+        const data = await sql<FormattedtypeReturn>`
+        SELECT
+         *
+        FROM
+           tb_return_type
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const typeReturn = data.rows;
+        return typeReturn;
     } catch (err) {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all customers.');

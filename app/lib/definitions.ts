@@ -173,4 +173,12 @@ export type FormattedContactCustomersTable = {
   created_at: string;
   
 };
+export type FormattedTypeTreatment = {
+  id: string;
+  description: string;
+};
+export type FormattedtypeReturn = {
+  id: string;
+  description: string;
+};
 
