@@ -174,11 +174,11 @@ export type FormattedContactCustomersTable = {
   
 };
 export type FormattedTypeTreatment = {
-  id: string;
+  treatment_type_id_uuid: string;
   description: string;
 };
 export type FormattedtypeReturn = {
-  id: string;
+  return_type_id_uuid: string;
   description: string;
 };
 

@@ -31,14 +31,9 @@ export async function fetchCustomersContact() {
             customers.image_url,
             tb_costumer_contact.id_responsavel,
             tb_costumer_contact.tel_cel,
-            tb_costumer_contact.email,
-            customer_contacts.message,
-            customer_contacts.created_at,
-            customer_contacts.customer_id_uuid
+            tb_costumer_contact.email
         FROM
             customers
-        LEFT JOIN
-            customer_contacts ON customers.id = customer_contacts.customer_id_uuid
         LEFT JOIN
             tb_costumer_contact ON customers.id = tb_costumer_contact.customer_id
         WHERE 

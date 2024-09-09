@@ -9,7 +9,7 @@ import {
     FormattedtypeReturn
 } from '@/app/lib/definitions';
 import { useState } from 'react';
-import { PencilIcon, CogIcon, UserGroupIcon} from '@heroicons/react/24/outline';
+import { PencilIcon, CogIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { useFormState } from 'react-dom';
 import { createReturn } from '@/app/lib/contato/action';
 
@@ -42,7 +42,7 @@ export default function CustomersTable({
         closeModal();
     };
 
-   
+
 
     const initialState = { message: null, errors: {} };
     const [state, dispatch] = useFormState(createReturn, initialState);
@@ -146,27 +146,33 @@ export default function CustomersTable({
                             Registrar Retorno para {selectedCustomer.name || selectedCustomer.nome_fantasia}
                         </h2>
                         <form action={dispatch}>
-                            <input type="hidden" value={selectedCustomer.id} id='id_customer' name='id_customer'/>
+                            <input type="hidden" value={selectedCustomer.id} id='id_customer' name='id_customer' />
                             <div className="relative mt-2 rounded-md">
                                 <label htmlFor="feedback" className="block text-sm font-medium text-gray-700">
                                     Tipo de tratativa
                                 </label>
-                                <select
-                                    id="typeTreatment"
-                                    name="typeTreatment"
-                                    className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                >
-                                    <option value=" " >Selecione um tipo de tratativa</option>
-                                    {typeTreatment.map((type) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.description}
+                                <div className="relative">
+                                    <select
+                                        id="typeTreatment"
+                                        name="typeTreatment_id"
+                                        className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        defaultValue=""
+                                        aria-describedby="customer-error"
+                                    >
+                                        <option value="" >
+                                            Selecione um tipo de tratativa
                                         </option>
-                                    ))}
-                                </select>
-                                <CogIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/1 text-gray-500" />
+                                        {typeTreatment.map((trearment) => (
+                                            <option key={trearment.treatment_type_id_uuid} value={trearment.treatment_type_id_uuid}>
+                                                {trearment.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <CogIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/1 text-gray-500" />
+                                </div>
                                 <div id="customer-error" aria-live="polite" aria-atomic="true">
-                                    {state.errors?.typeTreatment &&
-                                        state.errors.typeTreatment.map((error: string) => (
+                                    {state?.errors?.typeTreatment_id &&
+                                        state.errors.typeTreatment_id.map((error: string) => (
                                             <p className="mt-2 text-sm text-red-500" key={error}>
                                                 {error}
                                             </p>
@@ -177,22 +183,26 @@ export default function CustomersTable({
                                 <label htmlFor="feedback" className="block text-sm font-medium text-gray-700">
                                     Tipo de retorno do Cliente
                                 </label>
-                                <select
-                                    id="typeReturn"
-                                    name="typeReturn"
-                                    className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                >
-                                    <option value=" " >Selecione um tipo de retorno</option>
-                                    {typeReturn.map((types) => (
-                                        <option key={types.id} value={types.id}>
-                                            {types.description}
-                                        </option>
-                                    ))}
-                                </select>
-                                <UserGroupIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/1 text-gray-500" />
+                                <div className="relative">
+                                    <select
+                                        id="typeReturn"
+                                        name="typeReturn_id"
+                                        className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        defaultValue=""
+                                        aria-describedby="customer-error"
+                                    >
+                                        <option value="" >Selecione um tipo de retorno</option>
+                                        {typeReturn.map((ret) => (
+                                            <option key={ret.return_type_id_uuid} value={ret.return_type_id_uuid}>
+                                                {ret.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <UserGroupIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/1 text-gray-500" />
+                                </div>
                                 <div id="customer-error" aria-live="polite" aria-atomic="true">
-                                    {state.errors?.typeReturn &&
-                                        state.errors.typeReturn.map((error: string) => (
+                                    {state?.errors?.typeReturn_id &&
+                                        state.errors.typeReturn_id.map((error: string) => (
                                             <p className="mt-2 text-sm text-red-500" key={error}>
                                                 {error}
                                             </p>
@@ -208,10 +218,11 @@ export default function CustomersTable({
                                     name="message"
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     rows={3}
-                                    required
+
+                                    aria-describedby="customer-error"
                                 />
                                 <div id="customer-error" aria-live="polite" aria-atomic="true">
-                                    {state.errors?.message &&
+                                    {state?.errors?.message &&
                                         state.errors.message.map((error: string) => (
                                             <p className="mt-2 text-sm text-red-500" key={error}>
                                                 {error}

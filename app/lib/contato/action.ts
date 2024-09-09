@@ -11,18 +11,21 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 const veryReturn = z.object({
-    typeTreatment: z.string().nonempty({ message: 'Tipo de tratativa é obrigatorio.' }),
-    typeReturn: z.string().nonempty({ message: 'Tipo de retorno é obrigatório.' }),
-    message: z.string().nonempty({ message: 'Descrição do contato é obrigatorio.' }),
-    id_customer: z.string()
-
+    id_customer: z.string(),
+    typeTreatment_id: z.string().nonempty({
+        message: 'Tipo de tratativa é obrigatorio.'
+    }),
+typeReturn_id: z.string().nonempty({
+        message: 'Tipo de retorno é obrigatorio.',
+    }),
+    message: z.string().nonempty({ message: 'Descrição do contato é obrigatorio.' })
 });
 
 export type State = {
     errors?: {
         id_customer?: string[];
-        typeTreatment?: string[];
-        typeReturn?: string[];
+        typeTreatment_id?: string[];
+        typeReturn_id?: string[];
         message?: string[];
     };
     message?: string | null;
@@ -31,9 +34,9 @@ export type State = {
 export async function createReturn(prevState: State, formData: FormData) {
 
     const validatedFields = veryReturn.safeParse({
-        typeTreatment: formData.get('typeTreatment'),
+        typeTreatment_id: formData.get('typeTreatment_id'),
         id_customer: formData.get('id_customer'),
-        typeReturn: formData.get('typeReturn'),
+        typeReturn_id: formData.get('typeReturn_id'),
         message: formData.get('message'),
     });
 
@@ -44,13 +47,13 @@ export async function createReturn(prevState: State, formData: FormData) {
         };
     }
 
-    const { typeTreatment, typeReturn, message, id_customer } = validatedFields.data;
+    const { typeTreatment_id, typeReturn_id, message, id_customer } = validatedFields.data;
     const date = new Date().toISOString().split('T')[0];
 
     try {
         await sql`
     INSERT INTO customer_contacts (message, created_at, customer_id_uuid, treatment_type, return_type)
-    VALUES (${message}, NOW(), ${id_customer}, ${typeTreatment}, ${typeReturn} )
+    VALUES (${message}, NOW(), ${id_customer}, ${typeTreatment_id}, ${typeReturn_id} )
   `;
     } catch (error) {
         return {
@@ -62,6 +65,7 @@ export async function createReturn(prevState: State, formData: FormData) {
     revalidatePath('/View/dashboard/contato');
     redirect('/View/dashboard/contato');
 }
+
 
 
 
