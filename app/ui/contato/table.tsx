@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/font';
-import { UpdateCustomers, DeleteCustomers } from '@/app/ui/invoices/buttons';
+import { HistoryContact } from '@/app/ui/invoices/buttons';
 import {
     CustomersTableType,
     FormattedContactCustomersTable,
@@ -78,6 +78,9 @@ export default function CustomersTable({
                                             <p className="text-sm text-gray-500">
                                                 {contacts.tel_cel}
                                             </p>
+                                            <p className="text-sm text-gray-500">
+                                                {contacts.contact_count}
+                                            </p>
                                         </div>
                                         <button
                                             className="px-4 py-2 text-white bg-blue-600 rounded-md"
@@ -95,6 +98,7 @@ export default function CustomersTable({
                                     <th scope="col" className="px-4 py-5 font-medium sm:pl-6">Nome</th>
                                     <th scope="col" className="px-3 py-5 font-medium">Email</th>
                                     <th scope="col" className="px-3 py-5 font-medium">Contato</th>
+                                    <th scope="col" className="px-3 py-5 font-medium">Contatos realizados</th>
                                     <th scope="col" className="px-3 py-5 font-medium">Retorno</th>
                                 </tr>
                             </thead>
@@ -119,6 +123,9 @@ export default function CustomersTable({
                                         <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                                             {contacts.tel_cel}
                                         </td>
+                                        <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                                            {contacts.contact_count}
+                                        </td>
                                         <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                             <div className="flex justify gap-3">
                                                 <button
@@ -128,6 +135,9 @@ export default function CustomersTable({
                                                     <PencilIcon className="w-5" />
 
                                                 </button>
+                                                {(contacts.contact_count != '0') && (
+                                                <HistoryContact id={ contacts.id}/>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

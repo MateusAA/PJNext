@@ -1,4 +1,4 @@
-import { PencilIcon, PlusIcon, TrashIcon, CheckIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, CheckIcon, ArrowLeftIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/invoices/action';
 import { deleteGroupUsers } from '@/app/lib/users_group/action'
@@ -172,5 +172,16 @@ export function AgApCustomers({ id, status_id }: { id: string, status_id: string
         <ArrowLeftIcon className="w-5" />
       </button>
     </form>
+  );
+}
+
+export function HistoryContact({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/View/dashboard/contato/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-green-100"
+    >
+      <ScaleIcon className="w-5" />
+    </Link>
   );
 }

@@ -21,10 +21,27 @@ import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchCustomersContact() {
-    
+
     try {
         const data = await sql<FormattedContactCustomersTable>`
-        SELECT
+       SELECT
+            customers.name,
+            customers.nome_fantasia,
+            customers.id,
+            customers.image_url,
+            tb_costumer_contact.id_responsavel,
+            tb_costumer_contact.tel_cel,
+            tb_costumer_contact.email,
+            COUNT(customer_contacts .customer_id_uuid) AS contact_count
+        FROM
+            customers
+        LEFT JOIN
+            tb_costumer_contact ON customers.id = tb_costumer_contact.customer_id
+        LEFT JOIN
+            customer_contacts ON customers.id = customer_contacts .customer_id_uuid
+        WHERE 
+            customers.status_id = '1'
+        GROUP BY
             customers.name,
             customers.nome_fantasia,
             customers.id,
@@ -32,12 +49,7 @@ export async function fetchCustomersContact() {
             tb_costumer_contact.id_responsavel,
             tb_costumer_contact.tel_cel,
             tb_costumer_contact.email
-        FROM
-            customers
-        LEFT JOIN
-            tb_costumer_contact ON customers.id = tb_costumer_contact.customer_id
-        WHERE 
-            customers.status_id = '1'
+
     `;
         await new Promise((resolve) => setTimeout(resolve, 100));
         const contactCustomers = data.rows;
@@ -49,7 +61,7 @@ export async function fetchCustomersContact() {
 }
 
 export async function fetchTreatmentType() {
-    
+
     try {
         const data = await sql<FormattedTypeTreatment>`
         SELECT
@@ -67,7 +79,7 @@ export async function fetchTreatmentType() {
 }
 
 export async function fetchReturnType() {
-    
+
     try {
         const data = await sql<FormattedtypeReturn>`
         SELECT

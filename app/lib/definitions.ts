@@ -171,6 +171,7 @@ export type FormattedContactCustomersTable = {
   id_responsavel: string;
   message: string;
   created_at: string;
+  contact_count: string;
   
 };
 export type FormattedTypeTreatment = {

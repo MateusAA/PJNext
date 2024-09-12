@@ -62,8 +62,8 @@ export async function createReturn(prevState: State, formData: FormData) {
     }
 
 
-    revalidatePath('/View/dashboard/contato');
-    redirect('/View/dashboard/contato');
+    revalidatePath(`/View/dashboard/contato/${id_customer}/edit`);
+    redirect(`/View/dashboard/contato/${id_customer}/edit`);
 }
 
 
