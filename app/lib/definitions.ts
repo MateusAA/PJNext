@@ -183,3 +183,19 @@ export type FormattedtypeReturn = {
   description: string;
 };
 
+export type FormattedContactCustomersHistory = {
+  id: string;
+  name: string;
+  nome_fantasia: string;
+  email: string;
+  image_url: string;
+  tel_cel: string;
+  id_responsavel: string;
+  message: string;
+  created_at: string;
+  cpf: string;
+  cnpj: string;
+  name_resp: string;
+
+
+};

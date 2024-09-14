@@ -1,11 +1,11 @@
-import Form from '@/app/ui/customers/edit-form';
+import ContactHistory from '@/app/ui/contato/history';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchCustomersById } from '@/app/lib/customers/data';
-import { fetchUsersByIdVendedor } from '@/app/lib/users/data';
+import { fetchCustomersHistoryContact, fetchTreatmentType, fetchReturnType } from '@/app/lib/contato/data';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-   
+    const contact = await fetchCustomersHistoryContact(id);
+
 
     return (
         <main>
@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-          
+            <ContactHistory contact={contact}/>
         </main>
     );
 }
