@@ -6,7 +6,6 @@ import {
     UsersTable,
     LatestInvoiceRaw,
     User,
-    Revenue,
     InvoicesTable,
     GroupField,
     UsersForm,

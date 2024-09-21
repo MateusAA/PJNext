@@ -7,6 +7,7 @@ export type User = {
   name: string;
   email: string;
   password: string;
+  id_grupo: string;
 };
 
 export type Customer = {
@@ -191,11 +192,11 @@ export type FormattedContactCustomersHistory = {
   image_url: string;
   tel_cel: string;
   id_responsavel: string;
-  message: string;
-  created_at: string;
   cpf: string;
   cnpj: string;
   name_resp: string;
-
-
+};
+export type FormattedContactCustomersHistoryContact = {
+  message: string;
+  created_at: string;
 };

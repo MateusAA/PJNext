@@ -6,7 +6,6 @@ import {
     UsersTable,
     LatestInvoiceRaw,
     User,
-    Revenue,
     InvoicesTable,
     GroupField,
     UsersForm,
@@ -15,13 +14,16 @@ import {
     CustomersForm,
     FormattedContactCustomersTable,
     FormattedTypeTreatment,
-    FormattedtypeReturn
+    FormattedtypeReturn,
+    FormattedContactCustomersHistory,
+    FormattedContactCustomersHistoryContact
 } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchCustomersContact() {
 
+    noStore();
     try {
         const data = await sql<FormattedContactCustomersTable>`
        SELECT
@@ -51,7 +53,7 @@ export async function fetchCustomersContact() {
             tb_costumer_contact.email
 
     `;
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const contactCustomers = data.rows;
         return contactCustomers;
     } catch (err) {
@@ -100,7 +102,7 @@ export async function fetchReturnType() {
 export async function fetchCustomersHistoryContact(id: string) {
 
     try {
-        const data = await sql<FormattedContactCustomersTable>`
+        const data = await sql<FormattedContactCustomersHistory>`
        SELECT
             customers.name,
             customers.cpf,
@@ -111,23 +113,40 @@ export async function fetchCustomersHistoryContact(id: string) {
             tb_costumer_contact.id_responsavel,
             tb_costumer_contact.tel_cel,
             tb_costumer_contact.email,
-            customer_contacts.*,
             users.name AS name_resp
         FROM
             customers
         LEFT JOIN
             tb_costumer_contact ON customers.id = tb_costumer_contact.customer_id::uuid
         LEFT JOIN
-            customer_contacts ON customers.id = customer_contacts .customer_id_uuid
-        LEFT JOIN
             users ON users.id = tb_costumer_contact.id_responsavel::uuid
-        WHERE 
-            customers.status_id = '1' AND customers.id = ${id}
+        WHERE customers.id = ${id}
         
     `;
         await new Promise((resolve) => setTimeout(resolve, 100));
         const contactCustomers = data.rows;
-        return contactCustomers;
+        return contactCustomers[0];
+    } catch (err) {
+        console.error('Database Error:', err);
+        throw new Error('Failed to fetch all customers.');
+    }
+}
+
+export async function fetchCustomersHistoryContactMessage(id: string) {
+
+    try {
+        const data = await sql<FormattedContactCustomersHistoryContact>`
+       SELECT
+        *
+        FROM
+            customer_contacts
+        WHERE 
+            customer_contacts.customer_id_uuid = ${id}
+        
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const contactCustomersMessage = data.rows;
+        return contactCustomersMessage;
     } catch (err) {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all customers.');

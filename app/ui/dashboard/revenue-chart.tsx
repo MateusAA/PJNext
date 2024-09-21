@@ -35,8 +35,8 @@ export default async function RevenueChart() { // Make component async, remove t
             className="mb-6 hidden flex-col justify-between text-sm text-gray-400 sm:flex"
             style={{ height: `${chartHeight}px` }}
           >
-            {yAxisLabels.map((label) => (
-              <p key={label}>{label}</p>
+            {yAxisLabels.map((label, index) => (
+              <p key={index}>{label}</p>
             ))}
           </div>
 

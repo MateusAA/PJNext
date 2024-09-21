@@ -15,7 +15,7 @@ export default async function SideNav() {
       >
         <div className="w-32 text-white md:w-40">
           <div className="mb-12">
-            Olá, {user.name || 'Usuario' } 
+           <p> Olá, {user.name || 'Usuario' } </p>
           </div>
           <AcmeLogo />
         </div>
