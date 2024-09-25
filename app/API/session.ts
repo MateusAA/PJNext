@@ -4,7 +4,8 @@ const db = new PrismaClient();
 import 'server-only'
 
 import { cookies } from 'next/headers';
-import { cache } from '@/app/lib/cacheModule';
+
+import { cache, cacheMap } from '@/app/lib/cacheModule';
 import { redirect } from 'next/navigation';
 import { SignJWT, jwtVerify, JWTPayload as JoseJWTPayload } from 'jose'
 const secretKey = process.env.SESSION_SECRET
@@ -38,6 +39,11 @@ export async function decrypt(session: string | undefined = '') {
 }
 
 export async function createSession(userId: string, name: string, id_grupo: string) {
+    cookies().set('session', '', {
+        expires: new Date(0),
+        path: '/',
+    });
+    cacheMap.clear();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ userId, name, id_grupo, expiresAt })
 
@@ -51,6 +57,12 @@ export async function createSession(userId: string, name: string, id_grupo: stri
 }
 
 export async function updateSession() {
+
+    cookies().set('session', '', {
+        expires: new Date(0),
+        path: '/',
+    });
+
     const session = cookies().get('session')?.value
     const payload = await decrypt(session)
 

@@ -1,5 +1,8 @@
 import type { NextAuthConfig } from 'next-auth';
 import { NextResponse } from 'next/server';
+import { cache, cacheMap } from '@/app/lib/cacheModule';
+
+import { cookies } from 'next/headers';
 
 const redirectWithRemovedCookie = (url: URL, cookieName: string) => {
     const response = NextResponse.redirect(url);
@@ -24,7 +27,7 @@ export const authConfig = {
             const isOnDashboard = nextUrl.pathname.startsWith('/View/dashboard');
             if (isOnDashboard) {
                 if (isLoggedIn) return true;
-
+         
                 // Redireciona para a página de login e remove o cookie
                 return redirectWithRemovedCookie(new URL('/View/login', nextUrl), 'session');
                 

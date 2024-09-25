@@ -1,7 +1,7 @@
 // Exemplo de uma função de cache básica
-const cache = (fn) => {
-    const cacheMap = new Map();
+const cacheMap = new Map();
 
+const cache = (fn) => {
     return async (...args) => {
         const key = JSON.stringify(args);
         if (cacheMap.has(key)) {
@@ -14,4 +14,5 @@ const cache = (fn) => {
     };
 };
 
-export { cache };
+// Exporta cache e cacheMap
+export { cache, cacheMap };
