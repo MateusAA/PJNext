@@ -70,14 +70,14 @@ const links: {
         icon: UserGroupIcon,
       },
       {
-        name: 'Contatos',
-        href: '/View/dashboard/contato',
-        icon: PhoneArrowDownLeftIcon,
-      },
-      {
         name: 'Aprovação',
         href: '/View/dashboard/aprovacao',
         icon: CheckIcon,
+      },
+      {
+        name: 'Contatos',
+        href: '/View/dashboard/contato',
+        icon: PhoneArrowDownLeftIcon,
       },
       {
         name: 'Dash Contatos',

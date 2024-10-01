@@ -2,6 +2,7 @@ import { Card } from '@/app/ui/dashboard/cards';
 import ContatoChart from '@/app/ui/contato/chart-contact-resp';
 import ResultsCardWrapper from '@/app/ui/contato/card-contact';
 import ContatoChartResp from '@/app/ui/contato/chart-contact';
+import ChartTable from '@/app/ui/contato/tableChart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/font';
 import { fetchChartContact } from '@/app/lib/contato/data';
@@ -31,6 +32,7 @@ export default async function Page() {
                     <ContatoChartResp chart={chart} />
                 </Suspense>
             </div>
+            <ChartTable query={chart} />
         </main>
     );
 }
