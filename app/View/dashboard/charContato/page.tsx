@@ -5,7 +5,7 @@ import ContatoChartResp from '@/app/ui/contato/chart-contact';
 import ChartTable from '@/app/ui/contato/tableChart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/font';
-import { fetchChartContact } from '@/app/lib/contato/data';
+import { fetchChartContact, fetchChartTableContact } from '@/app/lib/contato/data';
 import { Suspense } from 'react';
 import CardWrapper from '@/app/ui/dashboard/cards';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
@@ -13,6 +13,7 @@ import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/a
 export default async function Page() {
 
     const chart = await fetchChartContact();
+    const chartTable = await fetchChartTableContact();
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -32,7 +33,7 @@ export default async function Page() {
                     <ContatoChartResp chart={chart} />
                 </Suspense>
             </div>
-            <ChartTable query={chart} />
+            <ChartTable query={chartTable} />
         </main>
     );
 }

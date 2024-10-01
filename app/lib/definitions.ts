@@ -206,3 +206,12 @@ export type FormattedChartContact = {
   desc: string;
   description: string;
 };
+
+export type FormattedChartContactTable = {
+  name: string;
+  nome_fantasia: string;
+  id: string;
+  responsavel: string;
+  desc: string;
+  description: string;
+};
