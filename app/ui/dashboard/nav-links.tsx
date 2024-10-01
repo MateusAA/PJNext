@@ -7,6 +7,7 @@ import {
   PhoneArrowDownLeftIcon,
   BookmarkIcon,
   CheckIcon,
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
@@ -77,6 +78,11 @@ const links: {
         name: 'Aprovação',
         href: '/View/dashboard/aprovacao',
         icon: CheckIcon,
+      },
+      {
+        name: 'Dash Contatos',
+        href: '/View/dashboard/charContato',
+        icon: ChartBarIcon,
       },
     ],
   },

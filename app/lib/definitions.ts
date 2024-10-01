@@ -200,3 +200,9 @@ export type FormattedContactCustomersHistoryContact = {
   message: string;
   created_at: string;
 };
+
+export type FormattedChartContact = {
+  responsavel: string;
+  desc: string;
+  description: string;
+};

@@ -16,7 +16,8 @@ import {
     FormattedTypeTreatment,
     FormattedtypeReturn,
     FormattedContactCustomersHistory,
-    FormattedContactCustomersHistoryContact
+    FormattedContactCustomersHistoryContact,
+    FormattedChartContact
 } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -150,6 +151,30 @@ export async function fetchCustomersHistoryContactMessage(id: string) {
     } catch (err) {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all customers.');
+    }
+}
+
+export async function fetchChartContact() {
+
+    try {
+        const data = await sql<FormattedChartContact>`
+        SELECT 
+            USERS.name AS responsavel,
+            tb_treatment_type.description,
+            tb_return_type.description AS desc
+        FROM CUSTOMER_CONTACTS 
+        INNER JOIN CUSTOMERS ON CUSTOMERS.ID = CUSTOMER_CONTACTS.customer_id_uuid
+        INNER JOIN TB_COSTUMER_CONTACT ON TB_COSTUMER_CONTACT.customer_id = CUSTOMER_CONTACTS.customer_id_uuid
+        INNER JOIN USERS ON USERS.id = TB_COSTUMER_CONTACT.id_responsavel::uuid
+        INNER JOIN tb_treatment_type ON tb_treatment_type.treatment_type_id_uuid = CUSTOMER_CONTACTS.treatment_type::integer
+        INNER JOIN tb_return_type ON tb_return_type.return_type_id_uuid = CUSTOMER_CONTACTS.return_type::integer
+    `;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const contactChart = data.rows;
+        return contactChart;
+    } catch (err) {
+        console.error('Database Error:', err);
+        throw new Error('Failed to fetch all Chart.');
     }
 }
 
