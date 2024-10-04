@@ -3,13 +3,16 @@ import {
     BanknotesIcon,
     ClockIcon,
     UserGroupIcon,
+    PlusIcon,
+    MinusIcon,
+    DivideIcon
 } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 
 const iconMap = {
-    positivo: BanknotesIcon,
-    neutro: UserGroupIcon,
-    negativo: ClockIcon,
+    positivo: PlusIcon,
+    neutro: DivideIcon,
+    negativo: MinusIcon,
 };
 
 export default function CardWrapper({ data }: { data: Array<{ responsavel: string, description: string, desc: string }> }) {

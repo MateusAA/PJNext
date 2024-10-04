@@ -11,7 +11,7 @@ import {
 import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
-export async function fetchCustomersContact() {
+export async function fetchCustomersContact(query: string) {
 
     noStore();
     try {
@@ -32,7 +32,10 @@ export async function fetchCustomersContact() {
         LEFT JOIN
             customer_contacts ON customers.id = customer_contacts .customer_id_uuid
         WHERE 
-            customers.status_id = '1'
+            customers.status_id = '1' AND (
+            customers.name ILIKE ${`%${query}%`} OR
+            customers.email ILIKE ${`%${query}%`}
+    )
         GROUP BY
             customers.name,
             customers.nome_fantasia,
