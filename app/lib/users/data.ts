@@ -17,6 +17,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 
 
 export async function getUser(email: string) {
+    noStore();
     try {
         const user = await sql`SELECT * FROM users WHERE email=${email}`;
         

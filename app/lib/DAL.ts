@@ -11,6 +11,7 @@ const db = new PrismaClient();
 export const verifySession = cache(async () => {
     const cookie = cookies().get('session')
     // Verifica se o cookie existe antes de acessar seu valor
+    
     if (!cookie) {
         redirect('/login');
         return { isAuth: false };

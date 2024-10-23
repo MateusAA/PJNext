@@ -147,7 +147,7 @@ export async function fetchCustomersHistoryContactMessage(id: string) {
 }
 
 export async function fetchChartContact() {
-
+    noStore();
     try {
         const data = await sql<FormattedChartContact>`
         SELECT 

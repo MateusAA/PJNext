@@ -22,7 +22,7 @@ export async function encrypt(payload: MyJWTPayload) {
     return new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('7d')
+        .setExpirationTime('2m')
         .sign(encodedKey);
 }
 
@@ -32,6 +32,24 @@ export async function decrypt(session: string | undefined = '') {
         const { payload } = await jwtVerify(session, encodedKey, {
             algorithms: ['HS256'],
         })
+
+        const expiresAt = payload.expiresAt;
+
+        // Garantir que expiresAt é do tipo correto (string ou number)
+        if (typeof expiresAt !== 'string' && typeof expiresAt !== 'number') {
+            throw new Error('Invalid expiresAt format');
+        }
+
+        const now = Date.now();
+        const expiresTime = new Date(expiresAt).getTime();
+
+        // Verifica se o token já expirou
+        if (now > expiresTime) {
+            console.log('Session expired');
+            clearSession(); // Função para limpar cookies e sessão
+            return null;
+        }
+
         return payload
     } catch (error) {
         console.log('Failed to verify session')
@@ -44,6 +62,7 @@ export async function createSession(userId: string, name: string, id_grupo: stri
         path: '/',
     });
     cacheMap.clear();
+
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ userId, name, id_grupo, expiresAt })
 
@@ -79,4 +98,18 @@ export async function updateSession() {
         path: '/',
     })
 }
+
+// Função para limpar a sessão e redirecionar para o login
+export function clearSession() {
+    // Remove o cookie da sessão
+    cookies().set('session', '', {
+        expires: new Date(0),
+        path: '/',
+    });
+
+    cacheMap.clear();
+
+    // Redireciona para a página de login
+    redirect('View/login');
+}   
 
