@@ -7,7 +7,7 @@ export type User = {
   name: string;
   email: string;
   password: string;
-  id_grupo: string;
+  id_grupo: string | null;
 };
 
 export type Customer = {
