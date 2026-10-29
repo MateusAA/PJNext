@@ -9,7 +9,7 @@ import { createSession } from '@/app/API/session'
 
 // Função assíncrona que busca um usuário pelo email no banco de dados
 async function getUser(email: string): Promise<User | undefined> {
-    try {
+    try {/*  */
         // Realiza a consulta ao banco de dados para encontrar o usuário com o email fornecido
         const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
         // Retorna o primeiro usuário encontrado (ou undefined se nenhum usuário foi encontrado)
