@@ -5,11 +5,11 @@ import { z } from 'zod'; // Importa a biblioteca zod para validação de esquema
 import { sql } from '@vercel/postgres'; // Importa a função sql da biblioteca @vercel/postgres para consultas ao banco de dados
 import type { User } from '@/app/lib/definitions'; // Importa o tipo User para tipagem estática
 import bcrypt from 'bcrypt'; // Importa a biblioteca bcrypt para hashing e comparação de senhas
-import { createSession } from '@/app/API/session'
+import { createSession } from '@/app/api/session'
 
 // Função assíncrona que busca um usuário pelo email no banco de dados
 async function getUser(email: string): Promise<User | undefined> {
-    try {/*  */
+    try {
         // Realiza a consulta ao banco de dados para encontrar o usuário com o email fornecido
         const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
         // Retorna o primeiro usuário encontrado (ou undefined se nenhum usuário foi encontrado)
@@ -22,7 +22,7 @@ async function getUser(email: string): Promise<User | undefined> {
 }
 
 // Exporta a configuração de autenticação do NextAuth, incluindo a função de autenticação, login e logout
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig, // Espalha a configuração de autenticação personalizada
     providers: [
         // Define o provedor de credenciais para autenticação
