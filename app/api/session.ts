@@ -111,6 +111,6 @@ export function clearSession() {
     cacheMap.clear();
 
     // Redireciona para a página de login
-    redirect('View/login');
+    redirect('/View/login');
 }   
 

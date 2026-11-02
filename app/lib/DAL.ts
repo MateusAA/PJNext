@@ -13,7 +13,7 @@ export const verifySession = cache(async () => {
     // Verifica se o cookie existe antes de acessar seu valor
     
     if (!cookie) {
-        redirect('/login');
+        redirect('/View/login');
         return { isAuth: false };
     }
 
@@ -21,7 +21,7 @@ export const verifySession = cache(async () => {
 
     // Verifica se o objeto session tem userId
     if (!session || !session.userId) {
-        redirect('/login');
+        redirect('/View/login');
         return { isAuth: false };
     }
 
