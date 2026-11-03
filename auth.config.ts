@@ -8,15 +8,10 @@ export const authConfig = {
     callbacks: {
         async authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
-            const isOnLogin = nextUrl.pathname.startsWith('/View/login');
             const isOnDashboard = nextUrl.pathname.startsWith('/View/dashboard');
 
             if (isOnDashboard && !isLoggedIn) {
                 return NextResponse.redirect(new URL('/View/login', nextUrl));
-            }
-
-            if (isOnLogin && isLoggedIn) {
-                return NextResponse.redirect(new URL('/View/dashboard', nextUrl));
             }
 
             return true;
