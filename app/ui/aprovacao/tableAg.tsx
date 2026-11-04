@@ -14,7 +14,7 @@ export default async function CustomersTableAg({
     customers: FormattedCustomersTableAp[];
 }) {
   const user = await getUser();
-  const canManageApprovals = user?.id_grupo === '1' || user?.id_grupo === '2';
+  const canManageApprovals = user?.id_grupo === 1 || user?.id_grupo === 2;
   
   return (
 

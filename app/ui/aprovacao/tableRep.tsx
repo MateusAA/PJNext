@@ -15,7 +15,7 @@ export default async function CustomersTableRep({
 }) {
     const user = await getUser();
     const agAp = '3';
-    const canManageApprovals = user?.id_grupo === '1' || user?.id_grupo === '2';
+    const canManageApprovals = user?.id_grupo === 1 || user?.id_grupo === 2;
 
     return (
 

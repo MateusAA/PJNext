@@ -10,7 +10,7 @@ const encodedKey = new TextEncoder().encode(secretKey)
 interface MyJWTPayload extends JoseJWTPayload {
     name: string;
     userId: string;
-    id_grupo: string | null;
+    id_grupo: number | null;
     expiresAt: Date;
 
 }
@@ -53,7 +53,7 @@ export async function decrypt(session: string | undefined = '') {
     }
 }
 
-export async function createSession(userId: string, name: string, id_grupo: string | null) {
+export async function createSession(userId: string, name: string, id_grupo: number | null) {
     cookies().set('session', '', {
         expires: new Date(0),
         path: '/',

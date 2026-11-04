@@ -8,7 +8,7 @@ type VerifiedSession = {
     isAuth: true;
     userId: string;
     name: string;
-    id_grupo: string | null;
+    id_grupo: number | null;
 };
 
 export async function verifySession(): Promise<VerifiedSession> {
@@ -26,7 +26,8 @@ export async function verifySession(): Promise<VerifiedSession> {
         !session ||
         typeof session.userId !== 'string' ||
         typeof session.name !== 'string' ||
-        (session.id_grupo !== null && typeof session.id_grupo !== 'string')
+        (session.id_grupo !== null &&
+            (typeof session.id_grupo !== 'number' || !Number.isInteger(session.id_grupo)))
     ) {
         redirect('/View/login');
     }
