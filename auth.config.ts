@@ -6,11 +6,11 @@ export const authConfig = {
         signIn: '/View/login',
     },
     callbacks: {
-        async authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
+        async authorized({ request: { nextUrl, cookies } }) {
+            const hasAppSession = Boolean(cookies.get('session')?.value);
             const isOnDashboard = nextUrl.pathname.startsWith('/View/dashboard');
 
-            if (isOnDashboard && !isLoggedIn) {
+            if (isOnDashboard && !hasAppSession) {
                 return NextResponse.redirect(new URL('/View/login', nextUrl));
             }
 
