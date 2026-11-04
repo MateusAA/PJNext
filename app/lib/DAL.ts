@@ -3,12 +3,8 @@ import 'server-only'
 import { cookies } from 'next/headers';
 import { decrypt } from '@/app/api/session';
 import { redirect } from 'next/navigation';
-import { cache } from '@/app/lib/cacheModule';
-import { PrismaClient } from '@prisma/client';
 
-const db = new PrismaClient();
-
-export const verifySession = cache(async () => {
+export async function verifySession() {
     const cookie = cookies().get('session')
     // Verifica se o cookie existe antes de acessar seu valor
     
@@ -26,12 +22,12 @@ export const verifySession = cache(async () => {
     }
 
     return { isAuth: true, userId: session.userId, name: session.name, id_grupo: session.id_grupo }
-})
+}
 
 
 
 
-export const getUser = cache(async () => {
+export async function getUser() {
     const session = await verifySession()
     if (!session) return null
 
@@ -48,5 +44,5 @@ export const getUser = cache(async () => {
         console.error('Failed to fetch user');
         return null;
     }
-})
+}
 

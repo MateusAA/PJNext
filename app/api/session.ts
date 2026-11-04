@@ -1,11 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-const db = new PrismaClient();
-
 import 'server-only'
 
 import { cookies } from 'next/headers';
 
-import { cache, cacheMap } from '@/app/lib/cacheModule';
 import { redirect } from 'next/navigation';
 import { SignJWT, jwtVerify, JWTPayload as JoseJWTPayload } from 'jose'
 const secretKey = process.env.SESSION_SECRET
@@ -62,8 +58,6 @@ export async function createSession(userId: string, name: string, id_grupo: stri
         expires: new Date(0),
         path: '/',
     });
-    cacheMap.clear();
-
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ userId, name, id_grupo, expiresAt })
 
@@ -107,8 +101,6 @@ export function clearSession() {
         expires: new Date(0),
         path: '/',
     });
-
-    cacheMap.clear();
 
     // Redireciona para a página de login
     redirect('/View/login');
