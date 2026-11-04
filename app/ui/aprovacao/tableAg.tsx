@@ -14,6 +14,7 @@ export default async function CustomersTableAg({
     customers: FormattedCustomersTableAp[];
 }) {
   const user = await getUser();
+  const canManageApprovals = user?.id_grupo === '1' || user?.id_grupo === '2';
   
   return (
 
@@ -47,7 +48,7 @@ export default async function CustomersTableAg({
                   </div>
                   
                   <div className="flex justify-end gap-2">
-                    {(user.id_grupo === 1 || user.id_grupo === 2) && (
+                    {canManageApprovals && (
                       <UpdateAprov id={customer.id} />
                     )}
                   </div>
@@ -87,7 +88,7 @@ export default async function CustomersTableAg({
                       
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">
-                          {(user.id_grupo === 1 || user.id_grupo === 2) && (
+                          {canManageApprovals && (
                             <UpdateAprov id={customer.id} />
                           )}
                         </div>
