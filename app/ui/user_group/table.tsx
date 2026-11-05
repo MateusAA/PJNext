@@ -1,12 +1,7 @@
-import Image from 'next/image';
 import { UpdateUsersGroup, DeleteGroupUsers } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchGroup } from '@/app/lib/data';
+import { GroupField } from '@/app/lib/definitions';
 
-export default async function UsersGroupTable() {
-    const groups = await fetchGroup();
-
+export default function UsersGroupTable({ groups }: { groups: GroupField[] }) {
     return (
         <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
@@ -48,9 +43,9 @@ export default async function UsersGroupTable() {
                             </tr>
                         </thead>
                         <tbody className="bg-white">
-                            {groups?.map((group) => (
+                            {groups.map((group) => (
                                 <tr
-                                    key={group.description}
+                                    key={group.id_group}
                                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                                 >
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
@@ -66,6 +61,11 @@ export default async function UsersGroupTable() {
                             ))}
                         </tbody>
                     </table>
+                    {groups.length === 0 && (
+                        <p className="bg-white px-6 py-8 text-center text-sm text-gray-500">
+                            Nenhum grupo encontrado.
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

@@ -4,8 +4,9 @@ import { CreateUserGroup } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/font';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchInvoicesPages } from '@/app/lib/data';
+import { fetchFilteredGroups, fetchGroupsPages } from '@/app/lib/users_group/data';
 import { Metadata } from 'next';
+import Search from '@/app/ui/search';
 
 
 export const metadata: Metadata = {
@@ -22,9 +23,12 @@ export default async function Page({
     };
 }) {
     const query = searchParams?.query || '';
-    const currentPage = searchParams?.page || '';
+    const currentPage = Number(searchParams?.page) || 1;
 
-    const totalPages = await fetchInvoicesPages(query);
+    const [totalPages, groups] = await Promise.all([
+        fetchGroupsPages(query),
+        fetchFilteredGroups(query, currentPage),
+    ]);
 
     return (
         <div className="w-full">
@@ -32,10 +36,13 @@ export default async function Page({
                 <h1 className={`${lusitana.className} text-2xl`}>Grupo de usuários</h1>
             </div>
             <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+                <div className="w-full max-w-md">
+                    <Search placeholder="Pesquisar grupos..." />
+                </div>
                 <CreateUserGroup />
             </div>
             {<Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-                <Table/>
+                <Table groups={groups} />
             </Suspense>}
             <div className="mt-5 flex w-full justify-center">
                 {<Pagination totalPages={totalPages} />}
