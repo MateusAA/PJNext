@@ -129,12 +129,18 @@ export async function fetchCustomersHistoryContactMessage(id: string) {
 
     try {
         const data = await sql<FormattedContactCustomersHistoryContact>`
-       SELECT
-        *
-        FROM
-            customer_contacts
-        WHERE 
-            customer_contacts.customer_id_uuid = ${id}
+        SELECT
+            customer_contacts.message,
+            customer_contacts.created_at,
+            tb_treatment_type.description AS treatment_description,
+            tb_return_type.description AS return_description
+        FROM customer_contacts
+        INNER JOIN tb_treatment_type
+            ON tb_treatment_type.treatment_type_id_uuid = customer_contacts.treatment_type
+        INNER JOIN tb_return_type
+            ON tb_return_type.return_type_id_uuid = customer_contacts.return_type
+        WHERE customer_contacts.customer_id_uuid = ${id}
+        ORDER BY customer_contacts.created_at DESC
         
     `;
         await new Promise((resolve) => setTimeout(resolve, 100));

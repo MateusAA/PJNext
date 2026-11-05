@@ -1,17 +1,16 @@
 'use client'
 import Image from 'next/image';
-import { lusitana } from '@/app/ui/font';
-import { HistoryContact } from '@/app/ui/invoices/buttons';
 import {
-    CustomersTableType,
     FormattedContactCustomersTable,
     FormattedTypeTreatment,
     FormattedtypeReturn
 } from '@/app/lib/definitions';
-import { useState } from 'react';
-import { PencilIcon, CogIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import { ClockIcon, PencilIcon, CogIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { useFormState } from 'react-dom';
 import { createReturn } from '@/app/lib/contato/action';
+import ContactHistoryModal from '@/app/ui/contato/contact-history-modal';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -24,6 +23,8 @@ export default function CustomersTable({
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<FormattedContactCustomersTable | null>(null);
+    const [historyCustomer, setHistoryCustomer] = useState<FormattedContactCustomersTable | null>(null);
+    const router = useRouter();
 
     const openModal = (customer: FormattedContactCustomersTable) => {
         setSelectedCustomer(customer);
@@ -35,17 +36,19 @@ export default function CustomersTable({
         setSelectedCustomer(null);
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Lógica para registrar o retorno do cliente
-        console.log('Retorno registrado para:', selectedCustomer?.name || selectedCustomer?.nome_fantasia);
-        closeModal();
-    };
-
-
-
     const initialState = { message: null, errors: {} };
     const [state, dispatch] = useFormState(createReturn, initialState);
+
+    useEffect(() => {
+        if (state.message === 'Retorno registrado com sucesso.') router.refresh();
+    }, [router, state.message]);
+
+    const registerReturnFromHistory = () => {
+        if (!historyCustomer) return;
+        setSelectedCustomer(historyCustomer);
+        setHistoryCustomer(null);
+        setIsModalOpen(true);
+    };
 
     return (
         <div className="mt-6 flow-root">
@@ -82,12 +85,24 @@ export default function CustomersTable({
                                                 {contacts.contact_count}
                                             </p>
                                         </div>
-                                        <button
-                                            className="px-4 py-2 text-white bg-blue-600 rounded-md"
-                                            onClick={() => openModal(contacts)}
-                                        >
-                                            Registrar Retorno
-                                        </button>
+                                        <div className="flex shrink-0 flex-col gap-2">
+                                            <button
+                                                type="button"
+                                                className="rounded-md bg-blue-600 px-3 py-2 text-sm text-white"
+                                                onClick={() => openModal(contacts)}
+                                            >
+                                                Registrar retorno
+                                            </button>
+                                            {Number(contacts.contact_count) > 0 && (
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center justify-center gap-1 rounded-md border px-3 py-2 text-sm hover:bg-blue-50"
+                                                    onClick={() => setHistoryCustomer(contacts)}
+                                                >
+                                                    <ClockIcon className="h-4 w-4" /> Histórico
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -135,8 +150,16 @@ export default function CustomersTable({
                                                     <PencilIcon className="w-5" />
 
                                                 </button>
-                                                {(contacts.contact_count != '0') && (
-                                                <HistoryContact id={ contacts.id}/>
+                                                {Number(contacts.contact_count) > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setHistoryCustomer(contacts)}
+                                                        aria-label={`Ver histórico de ${contacts.name || contacts.nome_fantasia}`}
+                                                        title="Ver histórico de contatos"
+                                                        className="rounded-md border p-2 hover:bg-blue-50"
+                                                    >
+                                                        <ClockIcon className="w-5" />
+                                                    </button>
                                                 )}
                                             </div>
                                         </td>
@@ -255,9 +278,22 @@ export default function CustomersTable({
                                     Registrar
                                 </button>
                             </div>
+                            {state.message && (
+                                <p role="status" className={`mt-3 text-sm ${state.message === 'Retorno registrado com sucesso.' ? 'text-green-700' : 'text-red-600'}`}>
+                                    {state.message}
+                                </p>
+                            )}
                         </form>
                     </div>
                 </div>
+            )}
+            {historyCustomer && (
+                <ContactHistoryModal
+                    key={historyCustomer.id}
+                    customer={historyCustomer}
+                    onClose={() => setHistoryCustomer(null)}
+                    onRegisterReturn={registerReturnFromHistory}
+                />
             )}
         </div>
     );

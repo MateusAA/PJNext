@@ -200,6 +200,8 @@ export type FormattedContactCustomersHistory = {
 export type FormattedContactCustomersHistoryContact = {
   message: string;
   created_at: string;
+  treatment_description: string;
+  return_description: string;
 };
 
 export type FormattedChartContact = {
