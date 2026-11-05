@@ -1,68 +1,63 @@
-"use client"; // Para garantir que o componente funcione no lado do cliente
+'use client';
+
 import { FormattedChartContact } from '@/app/lib/definitions';
 import { lusitana } from '@/app/ui/font';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import Chart from 'chart.js/auto';
 import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const colors = [
+  'rgba(37, 99, 235, 0.65)',
+  'rgba(16, 185, 129, 0.65)',
+  'rgba(245, 158, 11, 0.65)',
+  'rgba(139, 92, 246, 0.65)',
+  'rgba(239, 68, 68, 0.65)',
+  'rgba(20, 184, 166, 0.65)',
+];
 
-export default function ContatoChartResp({ chart }: { chart: FormattedChartContact[] }) {
-    // O array de contatos recebidos
-    const contato = chart;
+export default function ContatoChart({ chart }: { chart: FormattedChartContact[] }) {
+  const treatments = Array.from(new Set(chart.map((item) => item.treatment)));
+  const returnTypes = Array.from(new Set(chart.map((item) => item.return_type)));
 
-    const results = ['Positivo', 'Neutro', 'Negativo'];
-    const responsaveis = Array.from(new Set(contato.map((item) => item.responsavel)));
+  const data = {
+    labels: treatments,
+    datasets: returnTypes.map((returnType, index) => ({
+      label: returnType,
+      data: treatments.map((treatment) =>
+        chart.filter((item) => item.treatment === treatment && item.return_type === returnType).length,
+      ),
+      backgroundColor: colors[index % colors.length],
+    })),
+  };
 
-    const datasets = results.map((result) => ({
-        label: result,
-        data: responsaveis.map((resp) =>
-            contato.filter(
-                (item) => item.responsavel === resp && item.desc === result
-            ).length
-        ),
-        backgroundColor:
-            result === 'Positivo'
-                ? 'rgba(45, 111, 161, 0.5)'
-                : result === 'Neutro'
-                    ? 'rgba(23, 111, 99, 0.6)'
-                    : 'rgba(123, 99, 188, 0.6)',
-    }));
+  return (
+    <section className="w-full md:col-span-4">
+      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>Retornos por tratativa</h2>
+      <div className="rounded-xl bg-gray-50 p-4">
+        {chart.length === 0 ? (
+          <EmptyChartMessage />
+        ) : (
+          <div className="rounded-md bg-white p-4">
+            <Bar
+              data={data}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+              }}
+              height={280}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
-    const chartData = {
-        labels: responsaveis,
-        datasets: datasets,
-    };
-
-    return (
-        <div className="w-full md:col-span-4">
-            <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-                Resultados por Responsável
-            </h2>
-            <div className="rounded-xl bg-gray-50 p-4">
-                <div className="sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md bg-white p-4 md:gap-4">
-                    <Bar
-                        data={chartData}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Resultados por Responsável',
-                                },
-                            },
-                        }}
-                    />
-                </div>
-                <div className="flex items-center pb-2 pt-6">
-                    <ArrowPathIcon className="h-5 w-5 text-gray-500" />
-                    <h3 className="ml-2 text-sm text-gray-500">Atualizado agora há pouco</h3>
-                </div>
-            </div>
-        </div>
-    );
+function EmptyChartMessage() {
+  return (
+    <div className="flex min-h-[280px] items-center justify-center rounded-md bg-white px-6 text-center text-sm text-gray-500">
+      Registre um contato para começar a visualizar os resultados por tratativa.
+    </div>
+  );
 }

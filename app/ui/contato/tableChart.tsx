@@ -1,70 +1,88 @@
-"use client";
-import Image from 'next/image';
-import {
-    FormattedChartContactTable
-} from '@/app/lib/definitions';
-import InvoiceStatus from '@/app/ui/invoices/status';
+'use client';
+
 import Link from 'next/link';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredUsers } from '@/app/lib/data';
-import { useState, useEffect } from 'react';
+import { FormattedChartContact } from '@/app/lib/definitions';
 
-export default function ChartTable({
-    query
-}: {
-    query: FormattedChartContactTable[];
-}) {
-    // Usar reduce para consolidar os dados
-    const consolidatedData = query.reduce((acc, curr) => {
-        const key = curr.name || curr.nome_fantasia || 'N/A';
-        if (!acc[key]) {
-            acc[key] = {
-                name: key,
-                id: curr.id,
-                responsavel: curr.responsavel,
-                Positivo: 0,
-                Neutro: 0,
-                Negativo: 0,
-            };
-        }
-        acc[key][curr.desc] += 1;
-        return acc;
-    }, {} as Record<string, any>);
+type CustomerSummary = {
+  customer_id: string;
+  customer: string;
+  responsavel: string;
+  total: number;
+  latestContact: string;
+  returnCounts: Record<string, number>;
+};
 
-    const resultArray = Object.values(consolidatedData);
+export default function ChartTable({ query }: { query: FormattedChartContact[] }) {
+  const returnTypes = Array.from(new Set(query.map((item) => item.return_type)));
+  const customers = new Map<string, CustomerSummary>();
 
-    return (
-        <div className="mt-6 flow-root">
-            <div className="inline-block min-w-full align-middle">
-                <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-                    <table className="min-w-full text-gray-900">
-                        <thead className="rounded-lg text-left text-sm font-normal">
-                            <tr>
-                                <th scope="col" className="px-3 py-5 font-medium">Cliente</th>
-                                <th scope="col" className="px-3 py-5 font-medium">Responsável</th>
-                                <th scope="col" className="px-3 py-5 font-medium">Positivo</th>
-                                <th scope="col" className="px-3 py-5 font-medium">Neutro</th>
-                                <th scope="col" className="px-3 py-5 font-medium">Negativo</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white">
-                            {resultArray.map((user, index) => (
-                                <tr
-                                    key={index}
-                                    className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                                >
+  for (const item of query) {
+    const summary = customers.get(item.customer_id) ?? {
+      customer_id: item.customer_id,
+      customer: item.customer,
+      responsavel: item.responsavel,
+      total: 0,
+      latestContact: item.created_at,
+      returnCounts: {},
+    };
 
-                                    <td className="whitespace-nowrap px-3 py-3"><Link href={`/View/dashboard/contato/${user.id}/edit`}>{user.name} </Link></td>
-                                    <td className="whitespace-nowrap px-3 py-3"><Link href={`/View/dashboard/contato/${user.id}/edit`}>{user.responsavel}</Link></td>
-                                    <td className="whitespace-nowrap px-3 py-3"><Link href={`/View/dashboard/contato/${user.id}/edit`} title='Ver contatos'>{user.Positivo}</Link></td>
-                                    <td className="whitespace-nowrap px-3 py-3"><Link href={`/View/dashboard/contato/${user.id}/edit`} title='Ver contatos'>{user.Neutro}</Link></td>
-                                    <td className="whitespace-nowrap px-3 py-3"><Link href={`/View/dashboard/contato/${user.id}/edit`} title='Ver contatos'>{user.Negativo}</Link></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
+    summary.total += 1;
+    summary.returnCounts[item.return_type] = (summary.returnCounts[item.return_type] ?? 0) + 1;
+    if (new Date(item.created_at) > new Date(summary.latestContact)) {
+      summary.latestContact = item.created_at;
+    }
+    customers.set(item.customer_id, summary);
+  }
+
+  const rows = Array.from(customers.values()).sort((a, b) => b.total - a.total);
+
+  return (
+    <section className="mt-6 flow-root">
+      <h2 className="mb-3 text-lg font-semibold text-gray-900">Resumo por cliente</h2>
+      <div className="overflow-x-auto rounded-lg bg-gray-50 p-2">
+        {rows.length === 0 ? (
+          <p className="rounded-md bg-white px-5 py-10 text-center text-sm text-gray-500">
+            Ainda não há contatos registrados no banco de dados.
+          </p>
+        ) : (
+          <table className="min-w-full text-sm text-gray-900">
+            <thead className="text-left text-gray-600">
+              <tr>
+                <th className="px-4 py-4 font-medium">Cliente</th>
+                <th className="px-4 py-4 font-medium">Responsável</th>
+                <th className="px-4 py-4 text-center font-medium">Contatos</th>
+                <th className="px-4 py-4 font-medium">Último contato</th>
+                {returnTypes.map((returnType) => (
+                  <th key={returnType} className="px-4 py-4 text-center font-medium">
+                    {returnType}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {rows.map((row) => (
+                <tr key={row.customer_id} className="border-t border-gray-100">
+                  <td className="whitespace-nowrap px-4 py-3 font-medium">
+                    <Link className="text-blue-700 hover:underline" href={`/View/dashboard/contato/${row.customer_id}/edit`}>
+                      {row.customer}
+                    </Link>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3">{row.responsavel}</td>
+                  <td className="px-4 py-3 text-center">{row.total}</td>
+                  <td className="whitespace-nowrap px-4 py-3">
+                    {new Date(row.latestContact).toLocaleDateString('pt-BR')}
+                  </td>
+                  {returnTypes.map((returnType) => (
+                    <td key={returnType} className="px-4 py-3 text-center">
+                      {row.returnCounts[returnType] ?? 0}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </section>
+  );
 }

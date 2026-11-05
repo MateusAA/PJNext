@@ -1,75 +1,57 @@
-"use client"; // Para garantir que o componente funcione no lado do cliente
-import {
-    FormattedChartContact
-} from '@/app/lib/definitions';
+'use client';
+
+import { FormattedChartContact } from '@/app/lib/definitions';
 import { lusitana } from '@/app/ui/font';
-import { useEffect, useState } from 'react';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { fetchChartContact } from '@/app/lib/contato/data';
-import { CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import Chart from 'chart.js/auto';
 import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const colors = [
+  'rgba(37, 99, 235, 0.65)',
+  'rgba(16, 185, 129, 0.65)',
+  'rgba(245, 158, 11, 0.65)',
+  'rgba(139, 92, 246, 0.65)',
+  'rgba(239, 68, 68, 0.65)',
+  'rgba(20, 184, 166, 0.65)',
+];
 
+export default function ContatoChartResp({ chart }: { chart: FormattedChartContact[] }) {
+  const responsaveis = Array.from(new Set(chart.map((item) => item.responsavel)));
+  const returnTypes = Array.from(new Set(chart.map((item) => item.return_type)));
 
+  const data = {
+    labels: responsaveis,
+    datasets: returnTypes.map((returnType, index) => ({
+      label: returnType,
+      data: responsaveis.map((responsavel) =>
+        chart.filter((item) => item.responsavel === responsavel && item.return_type === returnType).length,
+      ),
+      backgroundColor: colors[index % colors.length],
+    })),
+  };
 
-export default function ContatoChart({ chart }: { chart: FormattedChartContact[] }) {
-    // Não é mais necessário o estado para 'contato' e 'loading'
-    const contato = chart;
-
-    const results = ['Positivo', 'Neutro', 'Negativo'];
-    const descriptions = Array.from(new Set(contato.map((item) => item.description)));
-
-    const datasets = results.map((result) => ({
-        label: result,
-        data: descriptions.map((desc) =>
-            contato.filter(
-                (item) => item.description === desc && item.desc === result
-            ).length
-        ),
-        backgroundColor:
-            result === 'Positivo'
-                ? 'rgba(75, 192, 192, 0.6)'
-                : result === 'Neutro'
-                    ? 'rgba(255, 205, 86, 0.6)'
-                    : 'rgba(255, 99, 132, 0.6)',
-    }));
-
-    const chartData = {
-        labels: descriptions,
-        datasets: datasets,
-    };
-
-    return (
-        <div className="w-full md:col-span-4">
-            <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-                Resultados por tratativa
-            </h2>
-            <div className="rounded-xl bg-gray-50 p-4">
-                <div className="sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md bg-white p-4 md:gap-4">
-                    <Bar
-                        data={chartData}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Resultados por Tipo de Contato',
-                                },
-                            },
-                        }}
-                    />
-                </div>
-                <div className="flex items-center pb-2 pt-6">
-                    <ArrowPathIcon className="h-5 w-5 text-gray-500" />
-                    <h3 className="ml-2 text-sm text-gray-500 ">Atualizado agora há pouco</h3>
-                </div>
-            </div>
-
-        </div >
-    );
+  return (
+    <section className="w-full md:col-span-4">
+      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>Retornos por responsável</h2>
+      <div className="rounded-xl bg-gray-50 p-4">
+        {chart.length === 0 ? (
+          <div className="flex min-h-[280px] items-center justify-center rounded-md bg-white px-6 text-center text-sm text-gray-500">
+            Os dados aparecerão aqui quando houver contatos registrados.
+          </div>
+        ) : (
+          <div className="rounded-md bg-white p-4">
+            <Bar
+              data={data}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+              }}
+              height={280}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }

@@ -205,16 +205,10 @@ export type FormattedContactCustomersHistoryContact = {
 };
 
 export type FormattedChartContact = {
+  customer_id: string;
+  customer: string;
   responsavel: string;
-  desc: string;
-  description: string;
-};
-
-export type FormattedChartContactTable = {
-  name: string;
-  nome_fantasia: string;
-  id: string;
-  responsavel: string;
-  desc: string;
-  description: string;
+  treatment: string;
+  return_type: string;
+  created_at: string;
 };

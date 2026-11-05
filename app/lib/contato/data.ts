@@ -5,10 +5,8 @@ import {
     FormattedtypeReturn,
     FormattedContactCustomersHistory,
     FormattedContactCustomersHistoryContact,
-    FormattedChartContact,
-    FormattedChartContactTable
+    FormattedChartContact
 } from '@/app/lib/definitions';
-import { formatCurrency } from '@/app/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchCustomersContact(query: string) {
@@ -156,47 +154,32 @@ export async function fetchChartContact() {
     noStore();
     try {
         const data = await sql<FormattedChartContact>`
-        SELECT 
-            USERS.name AS responsavel,
-            tb_treatment_type.description,
-            tb_return_type.description AS desc
-        FROM CUSTOMER_CONTACTS 
-        INNER JOIN CUSTOMERS ON CUSTOMERS.ID = CUSTOMER_CONTACTS.customer_id_uuid
-        INNER JOIN TB_COSTUMER_CONTACT ON TB_COSTUMER_CONTACT.customer_id = CUSTOMER_CONTACTS.customer_id_uuid
-        INNER JOIN USERS ON USERS.id = TB_COSTUMER_CONTACT.id_responsavel::uuid
-        INNER JOIN tb_treatment_type ON tb_treatment_type.treatment_type_id_uuid = CUSTOMER_CONTACTS.treatment_type::integer
-        INNER JOIN tb_return_type ON tb_return_type.return_type_id_uuid = CUSTOMER_CONTACTS.return_type::integer
-    `;
+            SELECT
+                customer_contacts.customer_id_uuid AS customer_id,
+                COALESCE(customers.name, customers.nome_fantasia, 'Cliente') AS customer,
+                COALESCE((
+                    SELECT users.name
+                    FROM tb_costumer_contact
+                    LEFT JOIN users ON users.id = tb_costumer_contact.id_responsavel
+                    WHERE tb_costumer_contact.customer_id = customer_contacts.customer_id_uuid
+                    LIMIT 1
+                ), 'Sem responsável') AS responsavel,
+                tb_treatment_type.description AS treatment,
+                tb_return_type.description AS return_type,
+                customer_contacts.created_at
+            FROM customer_contacts
+            INNER JOIN customers ON customers.id = customer_contacts.customer_id_uuid
+            INNER JOIN tb_treatment_type
+                ON tb_treatment_type.treatment_type_id_uuid = customer_contacts.treatment_type
+            INNER JOIN tb_return_type
+                ON tb_return_type.return_type_id_uuid = customer_contacts.return_type
+            ORDER BY customer_contacts.created_at DESC
+        `;
         await new Promise((resolve) => setTimeout(resolve, 100));
-        const contactChart = data.rows;
-        return contactChart;
-    } catch (err) {
-        console.error('Database Error:', err);
-        throw new Error('Failed to fetch all Chart.');
-    }
-}
-
-export async function fetchChartTableContact() {
-
-    try {
-        const data = await sql<FormattedChartContactTable>`
-        SELECT 
-            CUSTOMERS.name,
-            CUSTOMERS.id,
-            CUSTOMERS.nome_fantasia,
-            USERS.name AS responsavel,
-            tb_treatment_type.description,
-            tb_return_type.description AS desc
-        FROM CUSTOMER_CONTACTS 
-        INNER JOIN CUSTOMERS ON CUSTOMERS.ID = CUSTOMER_CONTACTS.customer_id_uuid
-        INNER JOIN TB_COSTUMER_CONTACT ON TB_COSTUMER_CONTACT.customer_id = CUSTOMER_CONTACTS.customer_id_uuid
-        INNER JOIN USERS ON USERS.id = TB_COSTUMER_CONTACT.id_responsavel::uuid
-        INNER JOIN tb_treatment_type ON tb_treatment_type.treatment_type_id_uuid = CUSTOMER_CONTACTS.treatment_type::integer
-        INNER JOIN tb_return_type ON tb_return_type.return_type_id_uuid = CUSTOMER_CONTACTS.return_type::integer
-    `;
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        const contactChart = data.rows;
-        return contactChart;
+        return data.rows.map((contact) => ({
+            ...contact,
+            created_at: new Date(String(contact.created_at)).toISOString(),
+        }));
     } catch (err) {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all Chart.');
