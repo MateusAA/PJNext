@@ -128,10 +128,10 @@ export async function fetchCustomersById(id: string) {
             tcc.tel_cel,
             tcc.id_responsavel,
             us.name AS nameRes
-            FROM customers cus
-            INNER JOIN tb_costumer_andress tca ON cus.id::UUID = tca.customer_id::UUID
-            INNER JOIN tb_costumer_contact tcc ON cus.id::UUID = tcc.customer_id::UUID
-            INNER JOIN users us ON us.id::UUID = tcc.id_responsavel::UUID
+              FROM customers cus
+              LEFT JOIN tb_costumer_andress tca ON cus.id::UUID = tca.customer_id::UUID
+              LEFT JOIN tb_costumer_contact tcc ON cus.id::UUID = tcc.customer_id::UUID
+              LEFT JOIN users us ON us.id::UUID = tcc.id_responsavel::UUID
             WHERE cus.id = ${id}
  
     `;
