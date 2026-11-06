@@ -4,6 +4,9 @@ import { FormattedChartContact } from '@/app/lib/definitions';
 import { lusitana } from '@/app/ui/font';
 import { Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
+import { BarElement, CategoryScale, Legend, LinearScale, Title, Tooltip } from 'chart.js';
+
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const colors = [
   'rgba(37, 99, 235, 0.65)',
