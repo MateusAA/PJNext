@@ -86,11 +86,11 @@ model CustomerAddress {
 model CustomerContactInfo {
   id             Int    @id @default(autoincrement())
   customer_id    String @db.Uuid
-  id_responsavel String @db.Uuid
+  id_responsavel String? @db.Uuid
   tel_cel        String
   email          String
   customer       Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
-  responsavel    User     @relation(fields: [id_responsavel], references: [id])
+  responsavel    User?    @relation(fields: [id_responsavel], references: [id])
 
   @@index([customer_id])
   @@map("tb_costumer_contact")

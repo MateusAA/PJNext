@@ -159,8 +159,8 @@ export type CustomersForm = {
   cidade: string;
   uf: string;
   cep: string;
-  id_responsavel: string;
-  nameRes : string;
+  id_responsavel: string | null;
+  nameRes : string | null;
   image : string;
 };
 
