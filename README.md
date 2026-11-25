@@ -20,6 +20,10 @@ Para inserir dados de demonstração em um banco vazio, use `npm run seed:demo`.
 
 O script legado `npm run seed` contém credenciais fixas do tutorial; prefira `npm run seed:demo`.
 
+## E-mails de decisão de cadastro
+
+Para enviar ao cliente uma mensagem depois da aprovação ou reprovação, configure `RESEND_API_KEY` e `EMAIL_FROM` como variáveis de ambiente local e na Vercel. `EMAIL_FROM` deve usar um remetente/domínio verificado no Resend. Sem essas variáveis, a decisão é registrada normalmente e a tela informa que o e-mail não foi enviado.
+
 ## Recuperação de dados
 
 Migrations recriam estrutura, não registros apagados. Para recuperar dados antigos, é necessário um backup/exportação do PostgreSQL ou outra cópia dos dados. O repositório não contém um dump do banco.
