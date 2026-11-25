@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { submitCustomerLead } from '@/app/lib/customers/public-action';
+import { useCepLookup, type CepAddress } from '@/app/ui/customers/use-cep-lookup';
 
 const inputClass = 'mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100';
 
@@ -10,6 +11,20 @@ export default function PublicCustomerForm() {
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
     const [isPending, startTransition] = useTransition();
+    const { lookupCep, cepLookupStatus } = useCepLookup();
+    const [address, setAddress] = useState<CepAddress & { cep: string; numero: string }>({
+        cep: '', rua: '', numero: '', bairro: '', cidade: '', uf: '',
+    });
+
+    function handleAddressChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.currentTarget;
+        setAddress((current) => ({ ...current, [name]: value }));
+        if (name === 'cep') {
+            void lookupCep(value, (foundAddress) => {
+                setAddress((current) => ({ ...current, ...foundAddress }));
+            });
+        }
+    }
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -23,7 +38,11 @@ export default function PublicCustomerForm() {
             setMessage(result.success
                 ? 'Cadastro enviado. Nossa equipe vai analisar as informações e entrar em contato.'
                 : result.message ?? 'Não foi possível enviar o cadastro.');
-            if (result.success) form.reset();
+            if (result.success) {
+                form.reset();
+                setAddress({ cep: '', rua: '', numero: '', bairro: '', cidade: '', uf: '' });
+                setDocumentType('cpf');
+            }
         });
     }
 
@@ -76,13 +95,14 @@ export default function PublicCustomerForm() {
             <section className="space-y-4">
                 <h2 className="text-base font-semibold text-gray-900">Endereço</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <label className="text-sm font-medium text-gray-700">CEP *<input className={inputClass} name="cep" autoComplete="postal-code" inputMode="numeric" required maxLength={10} placeholder="00000-000" /></label>
-                    <label className="text-sm font-medium text-gray-700">Rua *<input className={inputClass} name="rua" autoComplete="address-line1" required maxLength={200} /></label>
-                    <label className="text-sm font-medium text-gray-700">Número *<input className={inputClass} name="numero" required maxLength={30} /></label>
-                    <label className="text-sm font-medium text-gray-700">Bairro *<input className={inputClass} name="bairro" autoComplete="address-level3" required maxLength={120} /></label>
-                    <label className="text-sm font-medium text-gray-700">Cidade *<input className={inputClass} name="cidade" autoComplete="address-level2" required maxLength={120} /></label>
-                    <label className="text-sm font-medium text-gray-700">UF *<input className={inputClass} name="uf" autoComplete="address-level1" required minLength={2} maxLength={2} /></label>
+                    <label className="text-sm font-medium text-gray-700">CEP *<input className={inputClass} name="cep" value={address.cep} onChange={handleAddressChange} autoComplete="postal-code" inputMode="numeric" required maxLength={10} placeholder="00000-000" /></label>
+                    <label className="text-sm font-medium text-gray-700">Rua *<input className={inputClass} name="rua" value={address.rua} onChange={handleAddressChange} autoComplete="address-line1" required maxLength={200} /></label>
+                    <label className="text-sm font-medium text-gray-700">Número *<input className={inputClass} name="numero" value={address.numero} onChange={handleAddressChange} required maxLength={30} /></label>
+                    <label className="text-sm font-medium text-gray-700">Bairro *<input className={inputClass} name="bairro" value={address.bairro} onChange={handleAddressChange} autoComplete="address-level3" required maxLength={120} /></label>
+                    <label className="text-sm font-medium text-gray-700">Cidade *<input className={inputClass} name="cidade" value={address.cidade} onChange={handleAddressChange} autoComplete="address-level2" required maxLength={120} /></label>
+                    <label className="text-sm font-medium text-gray-700">UF *<input className={inputClass} name="uf" value={address.uf} onChange={handleAddressChange} autoComplete="address-level1" required minLength={2} maxLength={2} /></label>
                 </div>
+                {cepLookupStatus && <p role="status" className="text-xs text-gray-600">{cepLookupStatus}</p>}
             </section>
 
             <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">

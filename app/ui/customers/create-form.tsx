@@ -21,6 +21,7 @@
     import { CreateCustomer } from '@/app/lib/customers/action';
     import { useRouter } from 'next/navigation';
     import { useFormState } from 'react-dom';
+import { useCepLookup } from '@/app/ui/customers/use-cep-lookup';
 
 
 type FormErrors = {
@@ -64,6 +65,7 @@ export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
     const [errors, setErrors] = useState<FormErrors>({});
         const [globalError, setGlobalError] = useState<string | null>(null);
         const errorRef = useRef<HTMLDivElement | null>(null);
+        const { lookupCep, cepLookupStatus } = useCepLookup();
         
         const router = useRouter();
 
@@ -84,6 +86,11 @@ export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
                     ...formData,
                     [name]: value
                 });
+                if (name === 'cep') {
+                    void lookupCep(value, (address) => {
+                        setFormData((current) => ({ ...current, ...address }));
+                    });
+                }
             }
         };
 
@@ -406,6 +413,7 @@ export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
                             <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
 
                         </div>
+                        {cepLookupStatus && <span role="status" className="mt-1 block text-xs text-gray-600">{cepLookupStatus}</span>}
                         {errors.cep && <span className="text-red-500 text-sm">{errors.cep}</span>}
 
                     </div>
