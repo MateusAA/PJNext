@@ -101,6 +101,7 @@ function NavGroup({
   toggleOpen: () => void;
   pathname: string;
 }) {
+  if (links.length === 0) return null;
   return (
     <div className="mb-4">
       <button
@@ -136,7 +137,7 @@ function NavGroup({
   );
 }
 
-export default function NavLinks() {
+export default function NavLinks({ allowedScreens }: { allowedScreens: string[] }) {
   const pathname = usePathname();
   const [openGroups, setOpenGroups] = useState({
     faturamento: false,
@@ -154,7 +155,7 @@ export default function NavLinks() {
   return (
     <aside className="w-64 p-4 bg-white border-r border-gray-200 h-full">
       {/* Home link */}
-      <div className="mb-4">
+      {allowedScreens.includes(links.home.href) && <div className="mb-4">
         <Link
           href={links.home.href}
           className={clsx(
@@ -167,26 +168,26 @@ export default function NavLinks() {
           <HomeIcon className="w-5 h-5" />
           <span>Home</span>
         </Link>
-      </div>
+      </div>}
 
       {/* Navigation groups */}
       <NavGroup
         title={links.faturamento.title}
-        links={links.faturamento.items}
+        links={links.faturamento.items.filter((link) => allowedScreens.includes(link.href))}
         isOpen={openGroups.faturamento}
         toggleOpen={() => toggleGroup('faturamento')}
         pathname={pathname}
       />
       <NavGroup
         title={links.gestaoPessoas.title}
-        links={links.gestaoPessoas.items}
+        links={links.gestaoPessoas.items.filter((link) => allowedScreens.includes(link.href))}
         isOpen={openGroups.gestaoPessoas}
         toggleOpen={() => toggleGroup('gestaoPessoas')}
         pathname={pathname}
       />
       <NavGroup
         title={links.CRM.title}
-        links={links.CRM.items}
+        links={links.CRM.items.filter((link) => allowedScreens.includes(link.href))}
         isOpen={openGroups.CRM}
         toggleOpen={() => toggleGroup('CRM')}
         pathname={pathname}

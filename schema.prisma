@@ -21,9 +21,10 @@ model User {
 }
 
 model UserGroup {
-  id_group    Int    @id @default(autoincrement())
-  description String
-  users       User[]
+  id_group           Int      @id @default(autoincrement())
+  description        String
+  screen_permissions String[] @default([])
+  users              User[]
 
   @@map("user_group")
 }

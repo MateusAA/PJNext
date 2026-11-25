@@ -5,7 +5,7 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import Sing from '@/app/ui/dashboard/sing';
 import { getUser } from '@/app/lib/DAL'; 
 
-export default async function SideNav() {
+export default async function SideNav({ allowedScreens }: { allowedScreens: string[] }) {
   const user = await getUser();
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
@@ -20,7 +20,7 @@ export default async function SideNav() {
           <AcmeLogo />
         </div>
       </Link>
-      <Sing />
+      <Sing allowedScreens={allowedScreens} />
     </div>
   );
 }

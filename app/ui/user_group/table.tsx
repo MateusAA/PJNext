@@ -1,5 +1,6 @@
 import { UpdateUsersGroup, DeleteGroupUsers } from '@/app/ui/invoices/buttons';
 import { GroupField } from '@/app/lib/definitions';
+import GroupScreensModal from '@/app/ui/user_group/group-screens-modal';
 
 export default function UsersGroupTable({ groups }: { groups: GroupField[] }) {
     return (
@@ -21,6 +22,7 @@ export default function UsersGroupTable({ groups }: { groups: GroupField[] }) {
                                         
                                     </div>
                                     <div className="flex justify-end gap-2">
+                                        <GroupScreensModal id={group.id_group} description={group.description} initialScreens={group.screen_permissions ?? []} />
                                         <UpdateUsersGroup id={group.id_group} />
                                         <DeleteGroupUsers id={group.id_group} />
                                     </div>
@@ -53,6 +55,7 @@ export default function UsersGroupTable({ groups }: { groups: GroupField[] }) {
                                     </td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end gap-3">
+                                            <GroupScreensModal id={group.id_group} description={group.description} initialScreens={group.screen_permissions ?? []} />
                                             <UpdateUsersGroup id={group.id_group} />
                                             <DeleteGroupUsers id={group.id_group}/>
                                         </div>

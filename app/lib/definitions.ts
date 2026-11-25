@@ -131,6 +131,7 @@ export type CustomerFilterCNPJ = {
 export type GroupField = {
   id_group: string;
   description: string;
+  screen_permissions?: string[];
 };
 export type InvoiceForm = {
   id: string;

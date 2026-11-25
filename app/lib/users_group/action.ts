@@ -123,3 +123,35 @@ export async function deleteGroupUsers(id: string) {
         };
     }
 }
+
+const dashboardScreens = [
+    '/View/dashboard',
+    '/View/dashboard/invoices',
+    '/View/dashboard/users',
+    '/View/dashboard/users_group',
+    '/View/dashboard/customers',
+    '/View/dashboard/aprovacao',
+    '/View/dashboard/contato',
+    '/View/dashboard/charContato',
+];
+
+export async function updateGroupScreenPermissions(id: string, formData: FormData) {
+    const parsedId = Number(id);
+    const screens = formData.getAll('screens').filter(
+        (screen): screen is string => typeof screen === 'string' && dashboardScreens.includes(screen),
+    );
+
+    if (!Number.isInteger(parsedId) || parsedId < 1) {
+        return { message: 'Grupo inválido.' };
+    }
+
+    try {
+        await sql`UPDATE user_group SET screen_permissions = ${screens} WHERE id_group = ${parsedId}`;
+        revalidatePath('/View/dashboard');
+        revalidatePath('/View/dashboard/users_group');
+        return { message: 'Permissões das telas salvas.' };
+    } catch (error) {
+        console.error('Failed to update group screen permissions:', error);
+        return { message: 'Não foi possível salvar as permissões.' };
+    }
+}

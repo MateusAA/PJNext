@@ -22,7 +22,7 @@ export async function fetchFilteredGroups(query: string, currentPage: number) {
 
     try {
         const data = await sql<GroupField>`
-            SELECT id_group, description
+            SELECT id_group, description, screen_permissions
             FROM user_group
             WHERE description ILIKE ${`%${query}%`}
             ORDER BY description
@@ -67,6 +67,23 @@ export async function fetchGroup() {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all group.');
     }
+}
+
+export async function fetchGroupScreenPermissions(id: string) {
+    noStore();
+    const data = await sql<{ screen_permissions: string[] }>`
+        SELECT screen_permissions FROM user_group WHERE id_group = ${id}
+    `;
+    return data.rows[0]?.screen_permissions ?? [];
+}
+
+export async function fetchScreenPermissionsForGroup(id: number | null) {
+    noStore();
+    if (id === null) return [];
+    const data = await sql<{ screen_permissions: string[] }>`
+        SELECT screen_permissions FROM user_group WHERE id_group = ${id}
+    `;
+    return data.rows[0]?.screen_permissions ?? [];
 }
 
 
