@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import CustomerAvatar from '@/app/ui/customers/customer-avatar';
 import { lusitana } from '@/app/ui/font';
 import { AgApCustomers } from '@/app/ui/invoices/buttons';
 import {
@@ -33,13 +33,7 @@ export default async function CustomersTableRep({
                                         <div>
                                             <div className="mb-2 flex items-center">
                                                 <div className="flex items-center gap-3">
-                                                    <Image
-                                                        src={customer.image_url || '/customers/bun.png'}
-                                                        className="rounded-full"
-                                                        alt={`${customer.name}'s profile picture`}
-                                                        width={28}
-                                                        height={28}
-                                                    />
+                                                    <CustomerAvatar src={customer.image_url} alt={`${customer.name ?? customer.razao_social}'s profile picture`} />
                                                     <p>{customer.name}</p>
                                                 </div>
                                             </div>
@@ -76,13 +70,7 @@ export default async function CustomersTableRep({
                                         <tr key={customer.id} className="group">
                                             <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                                                 <div className="flex items-center gap-3">
-                                                    <Image
-                                                        src={customer.image_url || '/customers/bun.png'}
-                                                        className="rounded-full"
-                                                        alt={`${customer.name}'s profile picture`}
-                                                        width={28}
-                                                        height={28}
-                                                    />
+                                                    <CustomerAvatar src={customer.image_url} alt={`${customer.name ?? customer.razao_social}'s profile picture`} />
                                                     <p>{customer.name === null ? customer.razao_social : customer.name}</p>
                                                 </div>
                                             </td>
