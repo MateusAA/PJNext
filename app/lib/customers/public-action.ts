@@ -3,6 +3,7 @@
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
+import { isValidCpf, isValidCnpj, normalizeCpf, normalizeCnpj } from '@/app/lib/document-validation';
 
 const leadSchema = z.object({
     documentType: z.enum(['cpf', 'cnpj']),
@@ -33,11 +34,11 @@ export async function submitCustomerLead(formData: FormData) {
     const parsed = leadSchema.safeParse({
         documentType: field(formData, 'documentType'),
         name: field(formData, 'name'),
-        cpf: field(formData, 'cpf').replace(/\D/g, ''),
+        cpf: normalizeCpf(field(formData, 'cpf')),
         rg: field(formData, 'rg'),
         razao_social: field(formData, 'razao_social'),
         nome_fantasia: field(formData, 'nome_fantasia'),
-        cnpj: field(formData, 'cnpj').replace(/\D/g, ''),
+        cnpj: normalizeCnpj(field(formData, 'cnpj')),
         ie: field(formData, 'ie'),
         email: field(formData, 'email'),
         tel_cel: field(formData, 'tel_cel'),
@@ -59,8 +60,8 @@ export async function submitCustomerLead(formData: FormData) {
 
     const isCpf = values.documentType === 'cpf';
     const document = (isCpf ? values.cpf : values.cnpj) ?? '';
-    if (document.length !== (isCpf ? 11 : 14)) {
-        return { success: false, message: isCpf ? 'Informe um CPF válido.' : 'Informe um CNPJ válido.' };
+    if (isCpf ? !isValidCpf(document) : !isValidCnpj(document)) {
+        return { success: false, message: isCpf ? 'CPF inválido. Confira os números digitados.' : 'CNPJ inválido. Confira os caracteres e dígitos verificadores.' };
     }
     if (isCpf && !values.name) return { success: false, message: 'Informe seu nome completo.' };
     if (!isCpf && (!values.razao_social || !values.nome_fantasia)) {

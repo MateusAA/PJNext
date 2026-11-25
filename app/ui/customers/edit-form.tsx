@@ -21,6 +21,7 @@ import { Button } from '@/app/ui/button';
 import { UpdateCustomer } from '@/app/lib/customers/action';
 import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
+import { isValidCpf, isValidCnpj } from '@/app/lib/document-validation';
 
 type FormErrors = {
     cpf?: string[];
@@ -129,6 +130,15 @@ export default function Form({ customer, usersVender }: { customer: CustomersFor
     const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         setGlobalError(null);
+
+        if (documentType === 'cpf' && !isValidCpf(formData.cpf)) {
+            setGlobalError('CPF inválido. Confira os números digitados.');
+            return;
+        }
+        if (documentType === 'cnpj' && !isValidCnpj(formData.cnpj)) {
+            setGlobalError('CNPJ inválido. Confira os caracteres e dígitos verificadores.');
+            return;
+        }
 
         const formCustomer = new FormData();
         formCustomer.append('cpf', formData.cpf)

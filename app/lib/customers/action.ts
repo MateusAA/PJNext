@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fetchCPForCNPJ } from './data';
+import { isValidCpf, isValidCnpj, normalizeCpf, normalizeCnpj } from '@/app/lib/document-validation';
 
 
 
@@ -75,10 +76,17 @@ export async function CreateCustomer(formInput: FormData, formDataCustomer: Form
     const emailtwo = formDataContact.get('email') as string | null;
 
     // Removendo pontos e traços do CPF e RG, se forem strings
-    const sanitizedCPF = cpf ? cpf.replace(/[.-]/g, '') : '';
+    const sanitizedCPF = cpf ? normalizeCpf(cpf) : '';
     const sanitizedRG = rg ? rg.replace(/[.-]/g, '') : '';
-    const sanitizedCNPJ = cnpj ? cnpj.replace(/[./-]/g, '') : '';
+    const sanitizedCNPJ = cnpj ? normalizeCnpj(cnpj) : '';
     const sanitizedIE = ie ? ie.replace(/[.-]/g, '') : '';
+
+    if (input === 'cpf' && !isValidCpf(sanitizedCPF)) {
+        return { message: 'CPF inválido. Confira os números digitados.' };
+    }
+    if (input === 'cnpj' && !isValidCnpj(sanitizedCNPJ)) {
+        return { message: 'CNPJ inválido. Confira os caracteres e dígitos verificadores.' };
+    }
 
     // Se houver uma imagem, salve-a na pasta 'uploads/images'
     let imagePath = null;
@@ -362,8 +370,16 @@ export async function UpdateCustomer(formInput: FormData, formDataCustomer: Form
     const emailtwo = formDataContact.get('email') as string | null;
 
     // Removendo pontos e traços do CPF e RG, se forem strings
-    const sanitizedCPF = cpf ? cpf.replace(/[.-]/g, '') : '';
+    const sanitizedCPF = cpf ? normalizeCpf(cpf) : '';
+    const sanitizedCNPJ = cnpj ? normalizeCnpj(cnpj) : '';
     const sanitizedRG = rg ? rg.replace(/[.-]/g, '') : '';
+
+    if (input === 'cpf' && !isValidCpf(sanitizedCPF)) {
+        return { message: 'CPF inválido. Confira os números digitados.' };
+    }
+    if (input === 'cnpj' && !isValidCnpj(sanitizedCNPJ)) {
+        return { message: 'CNPJ inválido. Confira os caracteres e dígitos verificadores.' };
+    }
 
     // Se houver uma imagem, salve-a na pasta 'uploads/images'
     let imagePath = null;
@@ -424,7 +440,7 @@ export async function UpdateCustomer(formInput: FormData, formDataCustomer: Form
     } else {
         // Validando os campos CNPJ
         validatedFields = CreateCustomerCNPJ.safeParse({
-            cnpj,
+            cnpj: sanitizedCNPJ,
             razao_social,
             nome_fantasia,
             ie,

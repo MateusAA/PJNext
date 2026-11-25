@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { submitCustomerLead } from '@/app/lib/customers/public-action';
 import { useCepLookup, type CepAddress } from '@/app/ui/customers/use-cep-lookup';
+import { isValidCpf, isValidCnpj } from '@/app/lib/document-validation';
 
 const inputClass = 'mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100';
 
@@ -32,6 +33,14 @@ export default function PublicCustomerForm() {
         const formData = new FormData(form);
         formData.set('documentType', documentType);
         setMessage('');
+        const document = String(formData.get(documentType) ?? '');
+        if (documentType === 'cpf' ? !isValidCpf(document) : !isValidCnpj(document)) {
+            setSuccess(false);
+            setMessage(documentType === 'cpf'
+                ? 'CPF inválido. Confira os números digitados.'
+                : 'CNPJ inválido. Confira os caracteres e dígitos verificadores.');
+            return;
+        }
         startTransition(async () => {
             const result = await submitCustomerLead(formData);
             setSuccess(result.success);
@@ -78,7 +87,7 @@ export default function PublicCustomerForm() {
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="text-sm font-medium text-gray-700">Razão social *<input className={inputClass} name="razao_social" required maxLength={200} /></label>
                         <label className="text-sm font-medium text-gray-700">Nome fantasia *<input className={inputClass} name="nome_fantasia" required maxLength={200} /></label>
-                        <label className="text-sm font-medium text-gray-700">CNPJ *<input className={inputClass} name="cnpj" inputMode="numeric" autoComplete="off" required maxLength={18} placeholder="00.000.000/0000-00" /></label>
+                        <label className="text-sm font-medium text-gray-700">CNPJ *<input className={inputClass} name="cnpj" autoCapitalize="characters" autoComplete="off" required maxLength={18} placeholder="00.000.000/0000-00" /></label>
                         <label className="text-sm font-medium text-gray-700">Inscrição estadual<input className={inputClass} name="ie" maxLength={30} /></label>
                     </div>
                 )}

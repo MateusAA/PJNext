@@ -22,6 +22,7 @@
     import { useRouter } from 'next/navigation';
     import { useFormState } from 'react-dom';
 import { useCepLookup } from '@/app/ui/customers/use-cep-lookup';
+import { isValidCpf, isValidCnpj } from '@/app/lib/document-validation';
 
 
 type FormErrors = {
@@ -97,6 +98,15 @@ export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
         const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
             e.preventDefault();
             setGlobalError(null);
+
+            if (documentType === 'cpf' && !isValidCpf(formData.cpf)) {
+                setGlobalError('CPF inválido. Confira os números digitados.');
+                return;
+            }
+            if (documentType === 'cnpj' && !isValidCnpj(formData.cnpj)) {
+                setGlobalError('CNPJ inválido. Confira os caracteres e dígitos verificadores.');
+                return;
+            }
 
             const formCustomer = new FormData();
             formCustomer.append('cpf', formData.cpf)
@@ -232,14 +242,15 @@ export default function Form({ usersVender }: { usersVender: UsersRespon[] }) {
                                         CNPJ
                                     </label>
                                     <div className="relative">
-                                        <InputMask
-                                            mask="99.999.999/9999-99"
+                                        <input
                                             id="cnpj"
                                             name="cnpj"
                                             value={formData.cnpj}
                                             onChange={handleChange}
                                             className="block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                            placeholder="Enter CNPJ"
+                                            placeholder="00.000.000/0000-00 ou alfanumérico"
+                                            autoCapitalize="characters"
+                                            maxLength={18}
                                         />
                                         <BanknotesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                                     </div>
