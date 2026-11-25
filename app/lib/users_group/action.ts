@@ -146,7 +146,13 @@ export async function updateGroupScreenPermissions(id: string, formData: FormDat
     }
 
     try {
-        await sql`UPDATE user_group SET screen_permissions = ${screens} WHERE id_group = ${parsedId}`;
+        await sql`
+            UPDATE user_group
+            SET screen_permissions = ARRAY(
+                SELECT jsonb_array_elements_text(${JSON.stringify(screens)}::jsonb)
+            )
+            WHERE id_group = ${parsedId}
+        `;
         revalidatePath('/View/dashboard');
         revalidatePath('/View/dashboard/users_group');
         return { message: 'Permissões das telas salvas.' };
